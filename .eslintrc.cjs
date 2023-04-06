@@ -11,6 +11,10 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['prettier'],
+  parserOptions: {
+    ecmaVersion: latest,
+    sourceType: module,
+  },
   rules: {
     'prettier/prettier': 'warn',
     'no-unused-vars': 'warn',
