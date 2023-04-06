@@ -1,8 +1,8 @@
 import express from 'express'
 
-const app = express()
+import loaders from './loaders/index.js'
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+const app = express()
+await loaders(app)
 
 export default app
