@@ -59,7 +59,7 @@ const created = (res, data) =>
   })
 
 const error = (res, err) => {
-  switch (error.status) {
+  switch (err.statusCode) {
     case 404:
       notFound(res, err.message)
       break
