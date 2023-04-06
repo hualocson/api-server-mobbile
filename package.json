@@ -5,7 +5,8 @@
   "description": "Api for mobile",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon --inspect src/index.js"
+    "start": "nodemon --inspect src/index.js",
+    "swagger-autogen": "node src/api/docs/swagger.js"
   },
   "keywords": [],
   "author": "HuaLocSon",
@@ -30,6 +31,8 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "morgan": "^1.10.0",
+    "swagger-autogen": "^2.23.1",
+    "swagger-ui-express": "^4.6.2",
     "winston": "^3.8.2"
   }
 }
