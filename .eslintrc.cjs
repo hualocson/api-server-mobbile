@@ -16,9 +16,9 @@ module.exports = {
     'no-unused-vars': 'warn',
     'no-console': 'off',
     'func-names': 'off',
-    'no-plusplus': 'off',
     'no-process-exit': 'off',
     'class-methods-use-this': 'off',
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/extensions': [
       'error',
       {
