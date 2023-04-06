@@ -1,14 +1,20 @@
 import responseHandler from '../handlers/response.handler.js'
-import { getListUser } from '../services/user.service.js'
+import { getListUserService } from '../services/user.service.js'
 
-// [GET] '/users/:id'
+// [GET] '/users/'
 const getAllUser = async (req, res) => {
   try {
-    const { message } = await getListUser()
+    const { message } = await getListUserService()
     responseHandler.ok(res, { message })
   } catch (error) {
     responseHandler.error(res, error)
   }
 }
 
-export { getAllUser }
+// [POST] '/users/signup'
+const signUp = async (req, res) => {}
+
+// [POST] '/users/signIn'
+const signIn = async (req, res) => {}
+
+export { getAllUser, signUp, signIn }
