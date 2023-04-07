@@ -4,6 +4,7 @@
   "description": "Api for mobile",
   "main": "src/index.js",
   "scripts": {
+    "generate": "npx prisma generate",
     "prod:swagger-autogen": "node ./build/src/api/docs/swagger.js",
     "dev:swagger-autogen": "node ./src/api/docs/swagger.js",
     "clean": "rm -rf build && mkdir build ",
