@@ -1,28 +1,15 @@
 import express from 'express'
-import {
-  getAllUser,
-  signUp,
-  signIn,
-} from '../../controllers/user.controller.js'
+import { userController } from '~api/controllers/index.js'
 
 const router = express.Router()
 
 // get all users
-router.get('/', getAllUser)
+router.get('/', userController.getAllUser)
 
 // signup
-router.post(
-  '/signup',
-  signUp,
-  // #swagger.start
-  // #swagger.path = '/users/signup'
-  // #swagger.method = 'post'
-  // #swagger.tags = ['User']
-  // #swagger.description = 'Create new user'
-  // #swagger.end
-)
+router.post('/signup', userController.signUp)
 
 // singin
-router.post('/signin', signIn)
+router.post('/signin', userController.signIn)
 
 export default router

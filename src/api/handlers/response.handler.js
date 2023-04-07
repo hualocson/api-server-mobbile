@@ -22,23 +22,28 @@
     "statusCode": 404 or 500
 }
 */
+import httpStatus from 'http-status'
 
 const responseWithData = (res, statusCode, data) =>
   res.status(statusCode).json(data)
 
-const badRequest = (res, message) =>
+const badRequest = (res, err) =>
   responseWithData(res, 400, {
     success: false,
-    data: null,
-    message,
+    data: {
+      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+    },
+    message: err.message,
     statusCode: 400,
   })
 
-const notFound = (res, message) =>
+const notFound = (res, err) =>
   responseWithData(res, 404, {
     success: false,
-    data: null,
-    message,
+    data: {
+      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+    },
+    message: err.message,
     statusCode: 404,
   })
 
@@ -60,16 +65,28 @@ const created = (res, data) =>
 
 const error = (res, err) => {
   switch (err.statusCode) {
-    case 404:
-      notFound(res, err.message)
+    case httpStatus.NOT_FOUND:
+      notFound(res, err)
       break
-    case 400:
-      badRequest(res, err.message)
+    case httpStatus.BAD_REQUEST:
+      badRequest(res, err)
+      break
+    case httpStatus.UNAUTHORIZED:
+      responseWithData(res, 401, {
+        success: false,
+        data: {
+          ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+        },
+        message: 'Unauthorized!',
+        statusCode: 401,
+      })
       break
     default:
       responseWithData(res, 500, {
         success: false,
-        data: error.message,
+        data: {
+          ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+        },
         message: 'Server get error!',
         statusCode: 500,
       })

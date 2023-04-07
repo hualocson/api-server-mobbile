@@ -18,13 +18,6 @@ const checkEmailExist = async (prisma, email) => {
   return false
 }
 
-const getUserByEmail = async (prisma, email) => {
-  const account = await prisma.user.findUnique({
-    where: { email },
-  })
-  return account
-}
-
 const checkPassword = async (password, hash) => {
   // validPassword
   const validPassword = await bcrypt.compare(password, hash)
@@ -32,4 +25,4 @@ const checkPassword = async (password, hash) => {
   return validPassword
 }
 
-export { hashPassword, checkEmailExist, checkPassword, getUserByEmail }
+export { hashPassword, checkEmailExist, checkPassword }

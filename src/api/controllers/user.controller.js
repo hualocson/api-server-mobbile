@@ -1,25 +1,18 @@
 import { PrismaClient } from '@prisma/client'
 
-import responseHandler from '../handlers/response.handler.js'
-import {
-  getListUserService,
-  createUserService,
-  signInService,
-} from '../services/user.service.js'
-import MyError from '../utils/error.js'
+import responseHandler from '~api/handlers/response.handler.js'
+import { userService, authService } from '~api/services/index.js'
+import catchAsync from '~utils/catch-async.js'
 
 const prisma = new PrismaClient()
 // [GET] '/users/'
-const getAllUser = async (req, res) => {
+const getAllUser = catchAsync(async (req, res) => {
   // #swagger.start
   // #swagger.path = '/users'
   // #swagger.method = 'get'
   // #swagger.tags = ['User']
   // #swagger.description = 'Get all users'
-
-  try {
-    const { allUsers } = await getListUserService(prisma)
-    /*
+  /*
     #swagger.responses[200] = {
       description: 'Get all users success',
       content: {
@@ -30,10 +23,7 @@ const getAllUser = async (req, res) => {
         },
       },
     }
-    */
-    responseHandler.ok(res, { users: allUsers })
-  } catch (error) {
-    /* #swagger.responses[500] = {
+    #swagger.responses[500] = {
     description: "Sign up fail",
     content: {
         "application/json": {
@@ -49,13 +39,13 @@ const getAllUser = async (req, res) => {
     }
 }
 */
-    responseHandler.error(res, error)
-  }
   // #swagger.end
-}
+  const { allUsers } = await userService.getListUser(prisma)
+  responseHandler.ok(res, { users: allUsers })
+}, prisma)
 
 // [POST] '/users/signup'
-const signUp = async (req, res) => {
+const signUp = catchAsync(async (req, res) => {
   // #swagger.start
   // #swagger.path = '/users/signup'
   // #swagger.method = 'post'
@@ -66,10 +56,8 @@ const signUp = async (req, res) => {
             required: true,
             schema: { $ref: "#/components/schemas/UserRegister" }
     } */
-  const data = req.body
-  try {
-    const user = await createUserService(prisma, data)
-    /* #swagger.responses[201] = {
+
+  /* #swagger.responses[201] = {
             description: "Sign up success",
             content: {
                 "application/json": {
@@ -94,15 +82,7 @@ const signUp = async (req, res) => {
                 }
             }
         }
-    */
-    responseHandler.created(res, user)
-  } catch (error) {
-    const err = {
-      message: error.message,
-      statusCode: error.statusCode(),
-    }
-
-    /* #swagger.responses[500] = {
+      #swagger.responses[500] = {
             description: "Sign up fail",
             content: {
                 "application/json": {
@@ -118,15 +98,15 @@ const signUp = async (req, res) => {
             }
         }
       */
-    responseHandler.error(res, err)
-  } finally {
-    await prisma.$disconnect()
-  }
+
   // #swagger.end
-}
+  const data = req.body
+  const user = await userService.createUser(prisma, data)
+  responseHandler.created(res, user)
+}, prisma)
 
 // [POST] '/users/signIn'
-const signIn = async (req, res) => {
+const signIn = catchAsync(async (req, res) => {
   // #swagger.start
   // #swagger.path = '/users/signin'
   // #swagger.method = 'post'
@@ -137,10 +117,7 @@ const signIn = async (req, res) => {
             schema: { $ref: "#/components/schemas/UserLogin" }
     }
     */
-  try {
-    // TODO: validate data
-    const user = await signInService(prisma, req.body)
-    /* #swagger.responses[200] = {
+  /* #swagger.responses[200] = {
             description: "Sign in success",
             content: {
                 "application/json": {
@@ -165,17 +142,7 @@ const signIn = async (req, res) => {
                 }
             }
         }
-    */
-    responseHandler.ok(res, user)
-  } catch (error) {
-    if (error instanceof MyError) {
-      const err = {
-        message: error.message,
-        statusCode: error.statusCode(),
-      }
-      responseHandler.error(res, err)
-    } else {
-      /* #swagger.responses[500] = {
+      #swagger.responses[500] = {
             description: "Sign up fail",
             content: {
                 "application/json": {
@@ -191,12 +158,16 @@ const signIn = async (req, res) => {
             }
         }
       */
-      responseHandler.error(res, error)
-    }
-  } finally {
-    await prisma.$disconnect()
-  }
   // #swagger.end
-}
+  // TODO: validate data
+  const { email, password } = req.body
+  const user = await authService.loginUserWithEmailAndPassword(
+    prisma,
+    email,
+    password,
+  )
+  responseHandler.ok(res, user)
+  return 'message'
+}, prisma)
 
-export { getAllUser, signUp, signIn }
+export default { getAllUser, signUp, signIn }
