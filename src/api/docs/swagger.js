@@ -3,7 +3,7 @@ import swaggerAutogen from 'swagger-autogen'
 const docs = {
   openapi: '3.0.3',
   info: {
-    title: 'API for bookstore', // short title.
+    title: 'API for Mobile app technical', // short title.
     description: 'RESTs Api for Mobile app', //  desc.
     version: '1.0.0', // version number
   },
@@ -167,11 +167,7 @@ const docs = {
   ],
 }
 
-const outputFile = './src/api/docs/swagger_output.json'
+const outputFile = './swagger_output.json'
 const endpointsFiles = ['./src/api/controllers/*.js']
 
-swaggerAutogen({ openapi: '3.0.0' })(outputFile, endpointsFiles, docs).then(
-  async () => {
-    await import('../../index.js')
-  },
-)
+swaggerAutogen({ openapi: '3.0.0' })(outputFile, endpointsFiles, docs)
