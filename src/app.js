@@ -1,8 +1,11 @@
 import express from 'express'
 
-import loaders from './loaders/index.js'
+import loaders from '~loaders/index.js'
 
-const app = express()
-await loaders(app)
+const startApp = async () => {
+  const app = express()
+  await loaders(app)
+  return app
+}
 
-export default app
+export default startApp
