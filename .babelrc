@@ -7,9 +7,10 @@
       {
         "alias": {
           "~": "./src",
+          "~api": "./src/api",
           "~loaders": "./src/loaders",
           "~configs": "./src/configs",
-          "~api": "./src/api"
+          "~helpers": "./src/helpers"
         }
       }
     ]

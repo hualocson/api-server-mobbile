@@ -1,9 +1,11 @@
 import express from 'express'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
+import fs from 'fs'
+import path from 'path'
 import configs from '../configs/index.js'
 import routes from '../api/routes/v1/index.js'
-import fs from 'fs'
+import { getRootPath } from '~/helpers/index.js'
 
 export default (app) => {
   app.get('/status', (req, res) => {
@@ -23,6 +25,8 @@ export default (app) => {
   // Load API routes
   app.use(configs.api.prefix_v1, routes)
 
-  const swaggerFile = JSON.parse(fs.readFileSync('./swagger_output.json', 'utf8'))
+  const swaggerFile = JSON.parse(
+    fs.readFileSync(path.join(getRootPath(), 'swagger_output.json'), 'utf8'),
+  )
   app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 }

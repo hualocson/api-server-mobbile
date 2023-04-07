@@ -1,0 +1,6 @@
+node_modules/
+build/
+.vscode/
+swagger_output.json
+README.md
+.gitignore

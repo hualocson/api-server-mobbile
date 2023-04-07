@@ -1,4 +1,6 @@
 import swaggerAutogen from 'swagger-autogen'
+import path from 'path'
+import { getRootPath } from '~/helpers/index.js'
 
 const docs = {
   openapi: '3.0.3',
@@ -167,7 +169,7 @@ const docs = {
   ],
 }
 
-const outputFile = './swagger_output.json'
-const endpointsFiles = ['./src/api/controllers/*.js']
+const outputFile = path.join(getRootPath(), 'swagger_output.json')
+const endpointsFiles = [path.join(getRootPath(), 'src/api/controllers/*.js')]
 
 swaggerAutogen({ openapi: '3.0.0' })(outputFile, endpointsFiles, docs)

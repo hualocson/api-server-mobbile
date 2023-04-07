@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  nodeapp:
+    container_name: api-server-container
+    restart: unless-stopped
+    build: .
+    image: nodeapp:v1.0
+    ports:
+        - 5001:5001
+    expose:
+        - 5001
