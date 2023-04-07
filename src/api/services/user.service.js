@@ -1,24 +1,21 @@
-import {
-  hashPassword,
-  checkEmailExist,
-  getUserByEmail,
-  checkPassword,
-} from '../utils/index.js'
-import MyError from '../utils/error.js'
+import httpStatus from 'http-status'
+import { hashPassword, checkEmailExist } from '~utils/index.js'
+import ApiError from '~utils/api-error.js'
 
 // [GET] '/users/'
-const getListUserService = async (prisma) => {
+const getListUser = async (prisma) => {
   const allUsers = await prisma.user.findMany()
 
   return { allUsers }
 }
 
 // [POST] '/users/signup'
-const createUserService = async (prisma, data) => {
+const createUser = async (prisma, data) => {
   const { email, password, firstName, lastName, phone, avatar } = data
 
   if (await checkEmailExist(prisma, email))
-    return Promise.reject(new MyError('Email already exists', 400))
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already exist')
+
   const hash = await hashPassword(password)
   const user = await prisma.user.create({
     data: {
@@ -31,22 +28,14 @@ const createUserService = async (prisma, data) => {
     },
   })
 
-  return Promise.resolve(user)
+  return user
 }
 
-// [POST] '/users/signin'
-const signInService = async (prisma, data) => {
-  const { email, password } = data
-  console.log({ email, password })
-  const isExist = await checkEmailExist(prisma, email)
-  if (!isExist) return Promise.reject(new MyError('Email is invalid', 400))
-
-  const user = await getUserByEmail(prisma, email)
-
-  const validPassword = await checkPassword(password, user.password)
-  if (!validPassword)
-    return Promise.reject(new MyError('Password is invalid', 400))
-
-  return Promise.resolve(user)
+const getUserByEmail = async (prisma, email) => {
+  const user = await prisma.user.findUnique({
+    where: { email },
+  })
+  return user
 }
-export { getListUserService, createUserService, signInService }
+
+export default { getListUser, createUser, getUserByEmail }

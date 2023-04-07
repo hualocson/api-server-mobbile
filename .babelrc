@@ -10,7 +10,9 @@
           "~api": "./src/api",
           "~loaders": "./src/loaders",
           "~configs": "./src/configs",
-          "~helpers": "./src/helpers"
+          "~helpers": "./src/helpers",
+          "~utils": "./src/utils",
+          "~middlewares": "./src/middlewares"
         }
       }
     ]
