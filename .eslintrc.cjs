@@ -4,13 +4,11 @@ module.exports = {
     es2021: true,
     node: true,
   },
+  presets: ["@babel/preset-env"],
   extends: ['airbnb-base', 'prettier', 'plugin:node/recommended'],
   overrides: [],
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
   plugins: ['prettier'],
+  parser: "@babel/eslint-parser",
   parserOptions: {
     ecmaVersion: latest,
     sourceType: module,
