@@ -1,6 +1,3 @@
-import path from 'path'
+import osHelpers from '~helpers/os.js'
 
-export const getRootPath = () => {
-  const base_path = path.join(__dirname, "../../")
-  return base_path
-}
+export default osHelpers
