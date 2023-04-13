@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 
 import responseHandler from '~api/handlers/response.handler.js'
-import { userService, authService } from '~api/services/index.js'
+import { userService, authService, tokenService } from '~api/services/index.js'
 import catchAsync from '~utils/catch-async.js'
 
 const prisma = new PrismaClient()
@@ -166,7 +166,8 @@ const signIn = catchAsync(async (req, res) => {
     email,
     password,
   )
-  responseHandler.ok(res, user)
+  const tokens = await tokenService.generateAuthTokens(user)
+  responseHandler.ok(res, tokens)
   return 'message'
 }, prisma)
 
