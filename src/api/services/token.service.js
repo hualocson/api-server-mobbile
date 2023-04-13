@@ -60,7 +60,6 @@ const verifyToken = (token, secret = configs.tokens.jwtAccessToken) => {
     if (err) {
       throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token')
     }
-    console.log(decoded)
     return decoded
   })
 }

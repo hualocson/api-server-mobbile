@@ -31,7 +31,7 @@ enum Role {
 model ProductCategory {
   id           Int       @id @default(autoincrement())
   categoryName String
-  Product      Product[]
+  products      Product[]
 }
 
 model Product {
@@ -41,7 +41,7 @@ model Product {
   name         String
   description  String
   productImage String
-  ProductItem  ProductItem[]
+  productItems  ProductItem[]
 }
 
 model ProductItem {
