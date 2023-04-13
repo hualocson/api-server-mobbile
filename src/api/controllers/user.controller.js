@@ -168,7 +168,6 @@ const signIn = catchAsync(async (req, res) => {
   )
   const tokens = await tokenService.generateAuthTokens(user)
   responseHandler.ok(res, tokens)
-  return 'message'
 }, prisma)
 
 export default { getAllUser, signUp, signIn }
