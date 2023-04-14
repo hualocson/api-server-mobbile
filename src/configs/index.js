@@ -7,6 +7,9 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 export default {
   port: osHelpers.toNumber(osHelpers.getOsEnv('SERVER_PORT')) || 5000,
+  isProduction: process.env.NODE_ENV === 'production',
+  isTest: process.env.NODE_ENV === 'test',
+  isDevelopment: process.env.NODE_ENV === 'development',
   logs: {
     level: process.env.LOG_LEVEL || 'silly',
   },
