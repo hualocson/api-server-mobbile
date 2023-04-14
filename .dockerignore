@@ -1,6 +1,8 @@
 node_modules/
 build/
+dist_test/
 .vscode/
-swagger_output.json
+.git/
 README.md
 .gitignore
+jsconfig.json

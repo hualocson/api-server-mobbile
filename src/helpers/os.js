@@ -18,7 +18,7 @@ const getRootPath = () => {
 
 const getPath = (p) => {
   return process.env.NODE_ENV === 'production'
-    ? path.join(process.cwd(), `${p.replace('src/', 'dist/').slice(0, -3)}.js`)
+    ? path.join(process.cwd(), `${p.replace('src/', 'build/').slice(0, -3)}.js`)
     : path.join(process.cwd(), p)
 }
 

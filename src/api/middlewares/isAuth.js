@@ -17,7 +17,7 @@ const getTokenFromHeaders = (req) => {
 const isAuth = (req, res, next) => {
   const token = getTokenFromHeaders(req)
   if (!token) {
-    next(new ApiError(httpStatus.UNAUTHORIZED, "You're not authorized"))
+    throw new ApiError(httpStatus.UNAUTHORIZED, "You're not authorized")
   }
   const decoded = tokenService.verifyToken(token)
   req.payload = decoded

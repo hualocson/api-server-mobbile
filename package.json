@@ -5,14 +5,12 @@
   "main": "src/index.js",
   "scripts": {
     "generate": "npx prisma generate",
-    "prod:swagger-autogen": "node ./build/api/docs/swagger.js",
-    "dev:swagger-autogen": "node ./src/api/docs/swagger.js",
     "clean": "rm -rf build && mkdir build ",
     "clean:test": "rm -rf dist_test && mkdir dist_test ",
     "test": "npm run clean:test && babel ./tests -d ./dist_test/tests &&  babel ./src -d ./dist_test/src && node ./dist_test/tests/index.test.js",
     "build-babel": "babel ./src -d ./build",
     "build": "npm run clean && npm run build-babel",
-    "production": "npm run build && npm run prod:swagger-autogen && node ./build/index.js",
+    "production": "npm run build && node ./build/index.js",
     "dev": "nodemon --exec ./node_modules/.bin/babel-node ./src/index.js"
   },
   "keywords": [],
@@ -53,7 +51,7 @@
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
     "morgan": "^1.10.0",
-    "swagger-autogen": "^2.23.1",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2",
     "winston": "^3.8.2"
   }
