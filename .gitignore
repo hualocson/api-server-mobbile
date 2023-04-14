@@ -4,4 +4,3 @@ prisma/migrations/
 build/
 dist_test/
 .env
-swagger_output.json

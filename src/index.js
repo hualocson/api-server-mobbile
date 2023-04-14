@@ -8,10 +8,23 @@ startApp()
     const server = http.createServer(app)
     server
       .listen(configs.port, () => {
-        logger.info(`
-      #############################################
-        Server listening on: http://localhost:${configs.port}
-      #############################################`)
+        if (configs.isDevelopment) {
+          logger.info(`
+          #############################################
+            Server listening on: http://localhost:${configs.port}
+          #############################################`)
+        } else if (configs.isProduction) {
+          logger.info(`
+          ###################
+            Server Started
+          ###################`)
+        } else {
+          logger.info(`
+          #############################################
+            TestMode:
+            Server listening on: http://localhost:${configs.port}
+          #############################################`)
+        }
       })
       .on('error', (err) => {
         logger.error(err)
