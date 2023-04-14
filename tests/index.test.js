@@ -1,7 +1,7 @@
-import configs from '~configs'
+import osHelpers from '~helpers'
 
 const test = () => {
-  console.log(configs.port)
+  console.log(osHelpers.getPath('src/api/controllers'))
 }
 
 test()
