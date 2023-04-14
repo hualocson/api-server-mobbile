@@ -6,13 +6,13 @@ import configs from '~/configs'
 import ApiError from '~/utils/api-error'
 
 const generateToken = async (
-  userId,
+  user,
   expires,
   type,
   secret = configs.tokens.jwtAccessToken,
 ) => {
   const payload = {
-    sub: userId,
+    sub: { id: user.id, role: user.role },
     iat: moment().unix(),
     exp: expires.unix(),
     type,
@@ -27,7 +27,7 @@ const generateAuthTokens = async (user) => {
     'minutes',
   )
   const accessToken = await generateToken(
-    user.id,
+    user,
     accessTokenExpires,
     tokenTypes.ACCESS,
   )
@@ -37,7 +37,7 @@ const generateAuthTokens = async (user) => {
     'minutes',
   )
   const refreshToken = await generateToken(
-    user.id,
+    user,
     refreshTokenExpires,
     tokenTypes.REFRESH,
     configs.tokens.jwtRefreshToken,
@@ -60,7 +60,6 @@ const verifyToken = (token, secret = configs.tokens.jwtAccessToken) => {
     if (err) {
       throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token')
     }
-    console.log(decoded)
     return decoded
   })
 }

@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
+import bodyParser from 'body-parser'
 import fs from 'fs'
 import path from 'path'
 import { errorConverter, errorHandler } from '~middlewares/error.js'
@@ -20,8 +21,8 @@ export default (app) => {
 
   app.use(cors())
 
-  app.use(express.json())
-  app.use(express.urlencoded({ extended: true }))
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: true }))
 
   // Load API routes
   app.use(configs.api.prefix_v1, routes)
