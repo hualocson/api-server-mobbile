@@ -18,7 +18,7 @@ model User {
   lastName  String
   phone     String
   password  String
-  avatar    String
+  avatar    String   @default("https://res.cloudinary.com/dq3yexsrd/image/upload/v1681562228/mobileapp/user/user-avatar-base.png")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -31,7 +31,8 @@ enum Role {
 model ProductCategory {
   id           Int       @id @default(autoincrement())
   categoryName String
-  products      Product[]
+  icUrl        String    @default("https://res.cloudinary.com/dq3yexsrd/image/upload/v1681562452/mobileapp/category/ic-category-base.png")
+  products     Product[]
 }
 
 model Product {
@@ -41,7 +42,7 @@ model Product {
   name         String
   description  String
   productImage String
-  productItems  ProductItem[]
+  productItems ProductItem[]
 }
 
 model ProductItem {
