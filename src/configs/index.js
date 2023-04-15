@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv'
-import osHelpers from '~/helpers/index.js'
+import { osHelpers } from '~/helpers/index.js'
 
 dotenv.config()
 // Set the NODE_ENV to 'development' by default
@@ -23,6 +23,13 @@ export default {
     jwtRefreshTokenExpires: osHelpers.toNumber(
       osHelpers.getOsEnv('JWT_REFRESH_EXPIRED'),
     ),
+  },
+
+  // cloudinary
+  cloudinary: {
+    cloud_name: osHelpers.getOsEnv('CLOUDINARY_CLOUD_NAME'),
+    api_key: osHelpers.getOsEnv('CLOUDINARY_API_KEY'),
+    api_secret: osHelpers.getOsEnv('CLOUDINARY_API_SECRET'),
   },
   /**
    * API configs
