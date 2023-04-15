@@ -1,3 +1,4 @@
 import osHelpers from '~helpers/os.js'
+import cloudinaryHelpers from '~helpers/cloudinary.helper'
 
-export default osHelpers
+export { osHelpers, cloudinaryHelpers }

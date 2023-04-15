@@ -1,5 +1,5 @@
 import httpStatus from 'http-status'
-import osHelpers from '~helpers'
+import { osHelpers, cloudinaryHelpers } from '~helpers'
 import ApiError from '~utils/api-error'
 import cloudinaryService from '../cloudinary.service.js'
 
@@ -9,9 +9,10 @@ const updateProductItemImage = async (prisma, productItemId, imageUrl) => {
   const productItem = await prisma.productItem.findUnique({ where: { id } })
   if (!productItem)
     throw new ApiError(httpStatus.NOT_FOUND, 'Product item not found')
-  const photoUrl = await cloudinaryService.uploadProductImageWithRemoteUrl(
-    productItem.productId,
+
+  const photoUrl = await cloudinaryService.uploadImage(
     imageUrl,
+    cloudinaryHelpers.getProductFolder(productItem.productId),
     `item-${productItem.id}`,
   )
   const updatedProductItem = await prisma.productItem.update({
