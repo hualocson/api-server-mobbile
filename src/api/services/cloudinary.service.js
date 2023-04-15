@@ -10,19 +10,25 @@ cloudinary.config({
 })
 
 // return image url
-const uploadProductImage = async (productId, imagePath) => {
+const uploadProductImage = async (productId, imagePath, imageName = 'base') => {
   const imgPath = osHelpers.getPath(imagePath)
   const photo = await cloudinary.uploader.upload(imgPath, {
     folder: `mobileapp/product_${productId}`,
+    public_id: imageName,
   })
 
   if (!photo) throw new ApiError(httpStatus.BAD_REQUEST, 'Upload image failed')
   return photo.secure_url
 }
 
-const uploadProductImageWithRemoteUrl = async (productId, imageUrl) => {
+const uploadProductImageWithRemoteUrl = async (
+  productId,
+  imageUrl,
+  imageName = 'base',
+) => {
   const photo = await cloudinary.uploader.upload(imageUrl, {
     folder: `mobileapp/product_${productId}`,
+    public_id: imageName,
   })
 
   if (!photo) throw new ApiError(httpStatus.BAD_REQUEST, 'Upload image failed')
