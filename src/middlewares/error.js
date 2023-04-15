@@ -5,12 +5,20 @@ import responseHandler from '~api/handlers/response.handler.js'
 
 const errorConverter = (err, req, res, next) => {
   let error = err
+  let statusCode
+  let message
   if (!(error instanceof ApiError)) {
-    const statusCode =
-      error.statusCode || error instanceof Prisma.PrismaClientKnownRequestError
-        ? httpStatus.BAD_REQUEST
-        : httpStatus.INTERNAL_SERVER_ERROR
-    const message = error.message || httpStatus[statusCode]
+    if (error.error) {
+      statusCode = error.error.http_code || httpStatus.INTERNAL_SERVER_ERROR
+      message = error.error.message || httpStatus[statusCode]
+    } else {
+      statusCode =
+        error.statusCode ||
+        error instanceof Prisma.PrismaClientKnownRequestError
+          ? httpStatus.BAD_REQUEST
+          : httpStatus.INTERNAL_SERVER_ERROR
+      message = error.message || httpStatus[statusCode]
+    }
     error = new ApiError(statusCode, message, false, error.stack)
   }
   next(error)

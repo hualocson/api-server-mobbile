@@ -1,4 +1,4 @@
-import osHelpers from '~helpers'
+import { osHelpers } from '~helpers'
 
 const test = () => {
   console.log(osHelpers.getPath('src'))

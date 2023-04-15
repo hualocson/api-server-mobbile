@@ -1,5 +1,5 @@
 import httpStatus from 'http-status'
-import osHelpers from '~helpers'
+import { osHelpers, cloudinaryHelpers } from '~helpers/index.js'
 import ApiError from '~utils/api-error'
 import cloudinaryService from '../cloudinary.service.js'
 
@@ -31,24 +31,33 @@ const getProductsById = async (prisma, productId) => {
 
 // [PATCH] '/products/:productId/image'
 const updateProductImage = async (prisma, productId, imageUrl) => {
-  const photoUrl = await cloudinaryService.uploadProductImageWithRemoteUrl(
-    productId,
-    imageUrl,
-  )
   const id = osHelpers.toNumber(productId)
-  const product = await prisma.product.update({
+
+  if (!imageUrl)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Image url is required')
+
+  const product = await prisma.product.findUnique({ where: { id } })
+  if (!product) throw new ApiError(httpStatus.NOT_FOUND, 'Product not found')
+  const photoUrl = await cloudinaryService.uploadImage(
+    imageUrl,
+    cloudinaryHelpers.getProductFolder(productId),
+  )
+  const updatedProduct = await prisma.product.update({
     where: { id },
     data: { productImage: photoUrl },
   })
 
-  return product
+  if (!product)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Update image failed')
+  return updatedProduct
 }
 
 // [POST] '/products'
 const createProduct = async (prisma, body) => {
   const { categoryId, name, description, imageUrl } = body
+  const id = osHelpers.toNumber(categoryId)
   const product = await prisma.product.create({
-    data: { categoryId, name, description, productImage: '' },
+    data: { categoryId: id, name, description, productImage: '' },
   })
 
   if (!product)
