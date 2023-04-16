@@ -1,10 +1,7 @@
-import { PrismaClient } from '@prisma/client'
-
 import responseHandler from '~api/handlers/response.handler.js'
-import { categoryService } from '~api/services'
 import catchAsync from '~utils/catch-async.js'
-
-const prisma = new PrismaClient()
+import prisma from '~configs/prisma.client'
+import { categoryService } from '~api/services'
 
 // [GET] '/categories/'
 const getListCategory = catchAsync(async (req, res) => {
@@ -31,7 +28,7 @@ const getListProductByCategoryId = catchAsync(async (req, res) => {
   responseHandler.ok(res, { category })
 }, prisma)
 
-// variations
+// #region variations
 // [POST] '/categories/:id/variations'
 const createVariationByCategoryId = catchAsync(async (req, res) => {
   const { id } = req.params
@@ -57,12 +54,22 @@ const getListVariationByCategoryId = catchAsync(async (req, res) => {
   responseHandler.ok(res, { variations })
 }, prisma)
 
-// end variations
+// #endregion variations
 
 // [POST] '/categories/'
 const createCategory = catchAsync(async (req, res) => {
-  const category = await categoryService.createCategory(prisma, req.body)
-
+  const { categoryName, icUrl, variations } = req.body
+  let category
+  if (!variations) {
+    category = await categoryService.createCategory(prisma, categoryName, icUrl)
+  } else {
+    category = await categoryService.createCategoryWithVariations(
+      prisma,
+      categoryName,
+      icUrl,
+      variations,
+    )
+  }
   responseHandler.created(res, { category })
 }, prisma)
 

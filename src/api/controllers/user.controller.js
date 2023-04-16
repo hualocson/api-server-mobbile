@@ -1,10 +1,8 @@
-import { PrismaClient } from '@prisma/client'
-
 import responseHandler from '~api/handlers/response.handler.js'
-import { userService, authService, tokenService } from '~api/services/index.js'
 import catchAsync from '~utils/catch-async.js'
+import prisma from '~configs/prisma.client'
+import { userService, authService, tokenService } from '~api/services/index.js'
 
-const prisma = new PrismaClient()
 // [GET] '/users/'
 const getAllUser = catchAsync(async (req, res) => {
   const { allUsers } = await userService.getListUser(prisma)

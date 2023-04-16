@@ -1,10 +1,7 @@
-import { PrismaClient } from '@prisma/client'
-
 import responseHandler from '~api/handlers/response.handler.js'
-import { variationService } from '~api/services/index.js'
 import catchAsync from '~utils/catch-async.js'
-
-const prisma = new PrismaClient()
+import prisma from '~configs/prisma.client'
+import { variationService } from '~api/services/index.js'
 
 // [GET] '/categories/variations'
 const getAllVariation = catchAsync(async (req, res) => {
@@ -18,6 +15,15 @@ const getVariationById = catchAsync(async (req, res) => {
   const { id } = req.params
 
   const variation = await variationService.getVariationById(prisma, id)
+
+  responseHandler.ok(res, { variation })
+}, prisma)
+
+// [GET] '/categories/variations/:id/options'
+const getAllOptionsInVariation = catchAsync(async (req, res) => {
+  const { id } = req.params
+
+  const variation = await variationService.getAllOptionsInVariation(prisma, id)
 
   responseHandler.ok(res, { variation })
 }, prisma)
@@ -38,5 +44,6 @@ const createVariation = catchAsync(async (req, res) => {
 export default {
   createVariation,
   getAllVariation,
+  getAllOptionsInVariation,
   getVariationById,
 }
