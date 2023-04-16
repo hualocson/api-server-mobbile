@@ -29,10 +29,11 @@ enum Role {
 }
 
 model ProductCategory {
-  id           Int       @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   categoryName String
-  icUrl        String    @default("https://res.cloudinary.com/dq3yexsrd/image/upload/v1681562452/mobileapp/category/ic-category-base.png")
+  icUrl        String      @default("https://res.cloudinary.com/dq3yexsrd/image/upload/v1681562452/mobileapp/category/ic-category-base.png")
   products     Product[]
+  variation    Variation[]
 }
 
 model Product {
@@ -46,10 +47,36 @@ model Product {
 }
 
 model ProductItem {
-  id           Int     @id @default(autoincrement())
-  product      Product @relation(fields: [productId], references: [id])
-  productId    Int
-  qtyInStock   Int
-  price        Int
-  productImage String
+  id                   Int                    @id @default(autoincrement())
+  product              Product                @relation(fields: [productId], references: [id])
+  productId            Int
+  qtyInStock           Int
+  price                Int
+  productImage         String
+  productConfiguration ProductConfiguration[]
+}
+
+model Variation {
+  id              Int               @id @default(autoincrement())
+  category        ProductCategory   @relation(fields: [categoryId], references: [id])
+  categoryId      Int
+  name            String
+  variationOption VariationOption[]
+}
+
+model VariationOption {
+  id                   Int                    @id @default(autoincrement())
+  variation            Variation              @relation(fields: [variationId], references: [id])
+  variationId          Int
+  value                String
+  productConfiguration ProductConfiguration[]
+}
+
+model ProductConfiguration {
+  productItem       ProductItem     @relation(fields: [productItemId], references: [id])
+  productItemId     Int
+  variationOption   VariationOption @relation(fields: [variationOptionId], references: [id])
+  variationOptionId Int
+
+  @@id([productItemId, variationOptionId])
 }
