@@ -6,8 +6,11 @@
       "~/*": ["./src/*"],
       "~api/*": ["./src/api/*"],
       "~configs/*": ["./src/configs/*"],
+      "~configs": ["./src/configs/index.js"],
       "~loaders/*": ["./src/loaders/*"],
+      "~loaders": ["./src/loaders/index.js"],
       "~helpers/*": ["./src/helpers/*"],
+      "~helpers": ["./src/helpers/index.js"],
       "~middlewares/*": ["./src/middlewares/*"],
       "~utils/*": ["./src/utils/*"]
     }
