@@ -3,6 +3,26 @@ import { osHelpers, cloudinaryHelpers } from '~helpers'
 import ApiError from '~utils/api-error'
 import cloudinaryService from '../cloudinary.service.js'
 
+// [GET] '/products/items/:productItemId'
+const getProductItemById = async (prisma, productItemId) => {
+  const id = osHelpers.toNumber(productItemId)
+  const productItem = await prisma.productItem.findUnique({
+    where: { id },
+    include: {
+      product: {
+        select: {
+          name: true,
+          description: true,
+        },
+      },
+      productConfiguration: true,
+    },
+  })
+  if (!productItem)
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product item not found')
+  return productItem
+}
+
 // [PATCH] '/products/items/:productItemId/image'
 const updateProductItemImage = async (prisma, productItemId, imageUrl) => {
   const id = osHelpers.toNumber(productItemId)
@@ -45,6 +65,7 @@ const createProductItem = async (prisma, productId, body) => {
 }
 
 export default {
+  getProductItemById,
   createProductItem,
   updateProductItemImage,
 }

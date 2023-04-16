@@ -2,6 +2,7 @@ import httpStatus from 'http-status'
 import { osHelpers, cloudinaryHelpers } from '~/helpers/index'
 import ApiError from '~utils/api-error'
 import cloudinaryService from './cloudinary.service'
+import variationService from './variations/variation.service'
 
 // [GET] '/categories'
 const getListCategory = async (prisma) => {
@@ -25,6 +26,44 @@ const getCategoryById = async (prisma, id) => {
   return category
 }
 
+// [GET] '/categories/:id/products'
+const getListProductByCategoryId = async (prisma, id) => {
+  const categoryId = osHelpers.toNumber(id)
+
+  const category = await prisma.productCategory.findUnique({
+    where: { id: categoryId },
+    include: { products: true },
+  })
+
+  if (!category) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Category not found')
+  }
+
+  return category
+}
+// variations
+// [POST] '/categories/:id/variations'
+const createVariationByCategoryId = async (prisma, id, body) => {
+  const categoryId = osHelpers.toNumber(id)
+  const { name } = body
+  const variation = await variationService.createVariation(
+    prisma,
+    name,
+    categoryId,
+  )
+  return variation
+}
+
+// [GET] '/categories/:id/variations'
+const getListVariationByCategoryId = async (prisma, id) => {
+  const categoryId = osHelpers.toNumber(id)
+  const category = await prisma.productCategory.findUnique({
+    where: { id: categoryId },
+    include: { variations: true },
+  })
+  return category
+}
+// end variations
 // [POST] '/categories'
 const createCategory = async (prisma, body) => {
   const { categoryName, icUrl } = body
@@ -119,8 +158,11 @@ const deleteCategory = async (prisma, id) => {
 
 export default {
   createCategory,
+  createVariationByCategoryId,
   deleteCategory,
   getListCategory,
   getCategoryById,
+  getListVariationByCategoryId,
+  getListProductByCategoryId,
   updateCategory,
 }
