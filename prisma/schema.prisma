@@ -33,7 +33,7 @@ model ProductCategory {
   categoryName String
   icUrl        String      @default("https://res.cloudinary.com/dq3yexsrd/image/upload/v1681562452/mobileapp/category/ic-category-base.png")
   products     Product[]
-  variations    Variation[]
+  variations   Variation[]
 }
 
 model Product {
@@ -47,28 +47,28 @@ model Product {
 }
 
 model ProductItem {
-  id                   Int                    @id @default(autoincrement())
-  product              Product                @relation(fields: [productId], references: [id])
-  productId            Int
-  qtyInStock           Int
-  price                Int
-  productImage         String
+  id                    Int                    @id @default(autoincrement())
+  product               Product                @relation(fields: [productId], references: [id])
+  productId             Int
+  qtyInStock            Int
+  price                 Int
+  productImage          String
   productConfigurations ProductConfiguration[]
 }
 
 model Variation {
-  id              Int               @id @default(autoincrement())
-  category        ProductCategory   @relation(fields: [categoryId], references: [id])
-  categoryId      Int
-  name            String
+  id               Int               @id @default(autoincrement())
+  category         ProductCategory   @relation(fields: [categoryId], references: [id])
+  categoryId       Int
+  name             String
   variationOptions VariationOption[]
 }
 
 model VariationOption {
-  id                   Int                    @id @default(autoincrement())
-  variation            Variation              @relation(fields: [variationId], references: [id])
-  variationId          Int
-  value                String
+  id                    Int                    @id @default(autoincrement())
+  variation             Variation              @relation(fields: [variationId], references: [id])
+  variationId           Int
+  value                 String
   productConfigurations ProductConfiguration[]
 }
 

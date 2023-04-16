@@ -75,7 +75,16 @@ const createProduct = async (prisma, body) => {
   const { categoryId, name, description, imageUrl } = body
   const id = osHelpers.toNumber(categoryId)
   const product = await prisma.product.create({
-    data: { categoryId: id, name, description, productImage: '' },
+    data: {
+      name,
+      description,
+      productImage: '',
+      category: {
+        connect: {
+          id,
+        },
+      },
+    },
   })
 
   if (!product)

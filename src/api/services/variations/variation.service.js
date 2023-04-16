@@ -22,6 +22,25 @@ const getVariationById = async (prisma, id) => {
   return variation
 }
 
+// [GET] '/categories/variations/:id/options'
+const getAllOptionsInVariation = async (prisma, id) => {
+  const vaId = osHelpers.toNumber(id)
+
+  const variation = await prisma.variation.findUnique({
+    where: { id: vaId },
+    include: {
+      variationOptions: {
+        select: {
+          id: true,
+          value: true,
+        },
+      },
+    },
+  })
+
+  return variation
+}
+
 // [POST] '/categories/variations'
 const createVariation = async (prisma, name, categoryId) => {
   const caId = osHelpers.toNumber(categoryId)
@@ -48,5 +67,6 @@ const createVariation = async (prisma, name, categoryId) => {
 export default {
   createVariation,
   getAllVariation,
+  getAllOptionsInVariation,
   getVariationById,
 }

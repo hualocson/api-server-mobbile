@@ -46,9 +46,9 @@ const updateProductItemImage = async (prisma, productItemId, imageUrl) => {
 // [POST] '/products/:productId/items'
 const createProductItem = async (prisma, productId, body) => {
   const { qtyInStock, price, imageUrl } = body
-  const id = osHelpers.toNumber(productId)
+  const proId = osHelpers.toNumber(productId)
   const productItem = await prisma.productItem.create({
-    data: { productId: id, qtyInStock, price, productImage: '' },
+    data: { productId: proId, qtyInStock, price, productImage: '' },
   })
 
   if (!productItem)
