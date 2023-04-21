@@ -1,10 +1,17 @@
-import { PrismaClient } from '@prisma/client'
-
 import responseHandler from '~api/handlers/response.handler.js'
-import { productService } from '~api/services'
+import prisma from '~configs/prisma.client'
 import catchAsync from '~utils/catch-async.js'
+import { productService } from '~api/services'
 
-const prisma = new PrismaClient()
+// [GET] '/products/items/:productItemId'
+const getProductItemById = catchAsync(async (req, res) => {
+  const { productItemId } = req.params
+  const productItem = await productService.getProductItemById(
+    prisma,
+    productItemId,
+  )
+  responseHandler.ok(res, { productItem })
+}, prisma)
 
 // [POST] '/products/:productId/items'
 const createProductItem = catchAsync(async (req, res) => {
@@ -17,6 +24,7 @@ const createProductItem = catchAsync(async (req, res) => {
   responseHandler.created(res, { productItem })
 }, prisma)
 
+// in product route
 // [PATCH] '/products/items/:productItemId/image'
 const updateProductItemImage = catchAsync(async (req, res) => {
   const { productItemId } = req.params
@@ -30,6 +38,7 @@ const updateProductItemImage = catchAsync(async (req, res) => {
 }, prisma)
 
 export default {
+  getProductItemById,
   createProductItem,
   updateProductItemImage,
 }

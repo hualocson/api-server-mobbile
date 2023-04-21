@@ -18,15 +18,33 @@ const getProductsById = async (prisma, productId) => {
       productItems: {
         select: {
           id: true,
-          qtyInStock: true,
           price: true,
-          productImage: true,
         },
       },
     },
   })
+
+  const aggregate = await prisma.productItem.aggregate({
+    _avg: {
+      price: true,
+    },
+    _max: {
+      price: true,
+    },
+    _min: {
+      price: true,
+    },
+    where: {
+      productId: id,
+    },
+  })
+
   if (!product) throw new ApiError(httpStatus.NOT_FOUND, 'Product not found')
-  return product
+  const returnProduct = {
+    ...product,
+    minPrice: aggregate._min.price,
+  }
+  return returnProduct
 }
 
 // [PATCH] '/products/:productId/image'
@@ -57,7 +75,16 @@ const createProduct = async (prisma, body) => {
   const { categoryId, name, description, imageUrl } = body
   const id = osHelpers.toNumber(categoryId)
   const product = await prisma.product.create({
-    data: { categoryId: id, name, description, productImage: '' },
+    data: {
+      name,
+      description,
+      productImage: '',
+      category: {
+        connect: {
+          id,
+        },
+      },
+    },
   })
 
   if (!product)

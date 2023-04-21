@@ -1,10 +1,7 @@
-import { PrismaClient } from '@prisma/client'
-
 import responseHandler from '~api/handlers/response.handler.js'
-import { categoryService } from '~api/services'
 import catchAsync from '~utils/catch-async.js'
-
-const prisma = new PrismaClient()
+import prisma from '~configs/prisma.client'
+import { categoryService } from '~api/services'
 
 // [GET] '/categories/'
 const getListCategory = catchAsync(async (req, res) => {
@@ -22,10 +19,57 @@ const getCategoryById = catchAsync(async (req, res) => {
   responseHandler.ok(res, { category })
 }, prisma)
 
+// [GET] '/categories/:id/products'
+const getListProductByCategoryId = catchAsync(async (req, res) => {
+  const { id } = req.params
+
+  const category = await categoryService.getListProductByCategoryId(prisma, id)
+
+  responseHandler.ok(res, { category })
+}, prisma)
+
+// #region variations
+// [POST] '/categories/:id/variations'
+const createVariationByCategoryId = catchAsync(async (req, res) => {
+  const { id } = req.params
+
+  const variation = await categoryService.createVariationByCategoryId(
+    prisma,
+    id,
+    req.body,
+  )
+
+  responseHandler.created(res, { variation })
+}, prisma)
+
+// [GET] '/categories/:id/variations'
+const getListVariationByCategoryId = catchAsync(async (req, res) => {
+  const { id } = req.params
+
+  const variations = await categoryService.getListVariationByCategoryId(
+    prisma,
+    id,
+  )
+
+  responseHandler.ok(res, { variations })
+}, prisma)
+
+// #endregion variations
+
 // [POST] '/categories/'
 const createCategory = catchAsync(async (req, res) => {
-  const category = await categoryService.createCategory(prisma, req.body)
-
+  const { categoryName, icUrl, variations } = req.body
+  let category
+  if (!variations) {
+    category = await categoryService.createCategory(prisma, categoryName, icUrl)
+  } else {
+    category = await categoryService.createCategoryWithVariations(
+      prisma,
+      categoryName,
+      icUrl,
+      variations,
+    )
+  }
   responseHandler.created(res, { category })
 }, prisma)
 
@@ -47,8 +91,11 @@ const deleteCategory = catchAsync(async (req, res) => {
 
 export default {
   createCategory,
+  createVariationByCategoryId,
   deleteCategory,
   getListCategory,
   getCategoryById,
+  getListProductByCategoryId,
+  getListVariationByCategoryId,
   updateCategory,
 }

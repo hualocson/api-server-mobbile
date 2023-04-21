@@ -34,6 +34,7 @@ module.exports = {
     'no-unused-vars': 'warn',
     'func-names': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'no-underscore-dangle': ['error', { allow: ['_avg', '_min', '_max'] }],
     'import/extensions': [
       'error',
       {
