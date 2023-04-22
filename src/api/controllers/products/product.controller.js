@@ -2,6 +2,7 @@ import responseHandler from '~api/handlers/response.handler.js'
 import catchAsync from '~utils/catch-async.js'
 import prisma from '~configs/prisma.client'
 import { productService } from '~api/services'
+
 // [GET] '/categories/products'
 const getProducts = catchAsync(async (req, res) => {
   const { result } = await productService.getProducts(prisma)

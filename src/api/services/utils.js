@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
+
 const prisma = new PrismaClient()
 // #region variation utils
 const isVariationExists = async (id) => {
