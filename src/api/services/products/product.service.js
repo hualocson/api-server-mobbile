@@ -1,15 +1,26 @@
 import httpStatus from 'http-status'
 import { osHelpers, cloudinaryHelpers } from '~helpers/index.js'
 import ApiError from '~utils/api-error'
+import models from '~/api/models/index.js'
+import utils from '~api/services/utils.js'
 import cloudinaryService from '../cloudinary.service.js'
 
-// [GET] '/products'
+// [GET] '/categories/products'
 const getProducts = async (prisma) => {
   const products = await prisma.product.findMany()
-  return { products }
+
+  const aggregate = await Promise.all(
+    products.map((item) => utils.aggregateProductItemPrice(item.id)),
+  )
+
+  const result = products.map((item, index) =>
+    models.productInstance(item, aggregate[index]),
+  )
+
+  return { result }
 }
 
-// [GET] '/products/:productId'
+// [GET] '/categories/products/:productId'
 const getProductsById = async (prisma, productId) => {
   const id = osHelpers.toNumber(productId)
   const product = await prisma.product.findUnique({
@@ -18,36 +29,24 @@ const getProductsById = async (prisma, productId) => {
       productItems: {
         select: {
           id: true,
+          productImage: true,
           price: true,
+          qtyInStock: true,
+          productConfigurations:
+            models.utils.productConfigurationsSelectOptions,
         },
       },
     },
   })
 
-  const aggregate = await prisma.productItem.aggregate({
-    _avg: {
-      price: true,
-    },
-    _max: {
-      price: true,
-    },
-    _min: {
-      price: true,
-    },
-    where: {
-      productId: id,
-    },
-  })
+  const aggregate = await utils.aggregateProductItemPrice(id)
 
   if (!product) throw new ApiError(httpStatus.NOT_FOUND, 'Product not found')
-  const returnProduct = {
-    ...product,
-    minPrice: aggregate._min.price,
-  }
+  const returnProduct = models.productInstance(product, aggregate)
   return returnProduct
 }
 
-// [PATCH] '/products/:productId/image'
+// [PATCH] '/categories/products/:productId/image'
 const updateProductImage = async (prisma, productId, imageUrl) => {
   const id = osHelpers.toNumber(productId)
 
@@ -70,7 +69,7 @@ const updateProductImage = async (prisma, productId, imageUrl) => {
   return updatedProduct
 }
 
-// [POST] '/products'
+// [POST] '/categories/products'
 const createProduct = async (prisma, body) => {
   const { categoryId, name, description, imageUrl } = body
   const id = osHelpers.toNumber(categoryId)

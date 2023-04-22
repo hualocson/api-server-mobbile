@@ -1,29 +1,32 @@
 import httpStatus from 'http-status'
 import { osHelpers, cloudinaryHelpers } from '~helpers'
 import ApiError from '~utils/api-error'
+import models from '~api/models/index.js'
 import cloudinaryService from '../cloudinary.service.js'
 
-// [GET] '/products/items/:productItemId'
+// [GET] '/categories/products/items/:productItemId'
 const getProductItemById = async (prisma, productItemId) => {
   const id = osHelpers.toNumber(productItemId)
   const productItem = await prisma.productItem.findUnique({
     where: { id },
     include: {
-      product: {
-        select: {
-          name: true,
-          description: true,
-        },
-      },
-      productConfiguration: true,
+      // product: {
+      //   select: {
+      //     name: true,
+      //     description: true,
+      //   },
+      // },
+      productConfigurations: models.utils.productConfigurationsSelectOptions,
     },
   })
   if (!productItem)
     throw new ApiError(httpStatus.NOT_FOUND, 'Product item not found')
-  return productItem
+
+  const result = models.productItemInstance(productItem)
+  return result
 }
 
-// [PATCH] '/products/items/:productItemId/image'
+// [PATCH] '/categories/products/items/:productItemId/image'
 const updateProductItemImage = async (prisma, productItemId, imageUrl) => {
   const id = osHelpers.toNumber(productItemId)
   const productItem = await prisma.productItem.findUnique({ where: { id } })
@@ -43,12 +46,31 @@ const updateProductItemImage = async (prisma, productItemId, imageUrl) => {
   return updatedProductItem
 }
 
-// [POST] '/products/:productId/items'
+// [POST] '/categories/products/:productId/items'
 const createProductItem = async (prisma, productId, body) => {
-  const { qtyInStock, price, imageUrl } = body
+  const { qtyInStock, price, imageUrl, productConfigurations } = body
   const proId = osHelpers.toNumber(productId)
+  if (qtyInStock < 0 || price < 0 || !imageUrl || !productConfigurations)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid data')
+
+  const variationOptions = productConfigurations.map((item) => {
+    return {
+      variationOption: {
+        create: { ...item },
+      },
+    }
+  })
+
   const productItem = await prisma.productItem.create({
-    data: { productId: proId, qtyInStock, price, productImage: '' },
+    data: {
+      productId: proId,
+      qtyInStock,
+      price,
+      productImage: '',
+      productConfigurations: {
+        create: variationOptions,
+      },
+    },
   })
 
   if (!productItem)

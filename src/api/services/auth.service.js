@@ -1,6 +1,7 @@
 import httpStatus from 'http-status'
 import { checkPassword } from '~utils/index.js'
 import ApiError from '~utils/api-error.js'
+import serviceUtils from '~api/services/utils.js'
 import userService from './user.service.js'
 
 // [POST] '/users/signin'
@@ -18,6 +19,41 @@ const loginUserWithEmailAndPassword = async (prisma, email, password) => {
   return user
 }
 
+// [POST] '/users/signup'
+const createUser = async (prisma, data) => {
+  const { email, password, firstName, lastName, phone, avatar } = data
+
+  if (await serviceUtils.checkEmailExist(email))
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already exist')
+
+  const hash = await serviceUtils.hashPassword(password)
+  let user
+  if (avatar) {
+    user = await prisma.user.create({
+      data: {
+        email,
+        password: hash,
+        firstName,
+        lastName,
+        phone,
+        avatar,
+      },
+    })
+  } else {
+    user = await prisma.user.create({
+      data: {
+        email,
+        password: hash,
+        firstName,
+        lastName,
+        phone,
+      },
+    })
+  }
+
+  return user
+}
 export default {
   loginUserWithEmailAndPassword,
+  createUser,
 }

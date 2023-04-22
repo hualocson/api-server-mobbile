@@ -64,6 +64,67 @@ export default {
             type: 'string',
             example: 'https://i.imgur.com/1J2h7Yt.jpg',
           },
+          minPrice: {
+            type: 'number',
+            example: 1000000,
+          },
+        },
+      },
+      Category: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'integer',
+            example: 1,
+          },
+          categoryName: {
+            type: 'string',
+            example: 'Laptop',
+          },
+          icUrl: {
+            type: 'string',
+            example: 'https://i.imgur.com/1J2h7Yt.jpg',
+          },
+        },
+      },
+      ProductItem: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'integer',
+            example: 1,
+          },
+          productImage: {
+            type: 'string',
+            example: 'https://i.imgur.com/1J2h7Yt.jpg',
+          },
+          price: {
+            type: 'number',
+            example: 1000000,
+          },
+          qtyInStock: {
+            type: 'integer',
+            example: 10,
+          },
+          productConfigurations: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/ProductConfiguration',
+            },
+          },
+        },
+      },
+      ProductConfiguration: {
+        type: 'object',
+        properties: {
+          variation: {
+            type: 'string',
+            example: 'Color',
+          },
+          value: {
+            type: 'string',
+            example: 'Red',
+          },
         },
       },
       CreateProductRequest: {
@@ -87,6 +148,60 @@ export default {
           },
         },
       },
+      CreateCategoryRequest: {
+        type: 'object',
+        properties: {
+          categoryName: {
+            type: 'string',
+            example: 'Laptop',
+          },
+          icUrl: {
+            type: 'string',
+            example: 'https://i.imgur.com/1J2h7Yt.jpg',
+          },
+          variations: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                name: {
+                  type: 'string',
+                },
+              },
+            },
+            example: [{ name: 'Color' }, { name: 'Size' }],
+          },
+        },
+      },
+      CreateProductItemRequest: {
+        type: 'object',
+        properties: {
+          qtyInStock: {
+            type: 'integer',
+            example: 10,
+          },
+          price: {
+            type: 'number',
+            example: 1000000,
+          },
+          productConfigurations: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                variationId: {
+                  type: 'integer',
+                  example: 1,
+                },
+                value: {
+                  type: 'string',
+                  example: 'Red',
+                },
+              },
+            },
+          },
+        },
+      },
       CreateProductSuccessResponse: {
         allOf: [
           { $ref: '#/components/schemas/Response' },
@@ -94,7 +209,39 @@ export default {
             type: 'object',
             properties: {
               data: {
-                $ref: '#/components/schemas/Product',
+                type: 'object',
+                properties: {
+                  product: {
+                    $ref: '#/components/schemas/Product',
+                  },
+                },
+              },
+            },
+          },
+        ],
+        example: {
+          success: true,
+          data: {
+            product: {
+              id: 1,
+              categoryId: 1,
+              name: 'Product 1',
+              description: 'Product 1 description',
+              productImage: 'https://i.imgur.com/1J2h7Yt.jpg',
+            },
+          },
+          message: 'Product created successfully',
+          statusCode: 201,
+        },
+      },
+      CreateCategorySuccessResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/Response' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                $ref: '#/components/schemas/Category',
               },
             },
           },
@@ -103,12 +250,10 @@ export default {
           success: true,
           data: {
             id: 1,
-            categoryId: 1,
-            name: 'Product 1',
-            description: 'Product 1 description',
-            productImage: 'https://i.imgur.com/1J2h7Yt.jpg',
+            categoryName: 'Laptop',
+            icUrl: 'https://i.imgur.com/1J2h7Yt.jpg',
           },
-          message: 'Product created successfully',
+          message: 'Request successful!',
           statusCode: 201,
         },
       },
@@ -212,10 +357,6 @@ export default {
       AllUsers: {
         type: 'array',
         items: { $ref: '#/components/schemas/User' },
-      },
-      AllProducts: {
-        type: 'array',
-        items: { $ref: '#/components/schemas/Product' },
       },
       LoginSuccessData: {
         type: 'object',
