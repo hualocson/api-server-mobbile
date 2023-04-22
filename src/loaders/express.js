@@ -1,10 +1,13 @@
 import cors from 'cors'
 import bodyParser from 'body-parser'
+import morgan from 'morgan'
 import { errorConverter, errorHandler } from '~middlewares/error.js'
 import configs from '../configs/index.js'
 import routes from '../api/routes/v1/index.js'
 
 export default (app) => {
+  if (configs.isDevelopment) app.use(morgan('combined'))
+
   app.get('/status', (req, res) => {
     res.status(200).end()
   })

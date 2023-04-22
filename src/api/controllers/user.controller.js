@@ -12,7 +12,7 @@ const getAllUser = catchAsync(async (req, res) => {
 // [POST] '/users/signup'
 const signUp = catchAsync(async (req, res) => {
   const data = req.body
-  const user = await userService.createUser(prisma, data)
+  const user = await authService.createUser(prisma, data)
   responseHandler.created(res, user)
 }, prisma)
 
