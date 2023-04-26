@@ -1,37 +1,19 @@
 import httpStatus from 'http-status'
 import { osHelpers, cloudinaryHelpers } from '~/helpers/index'
 import ApiError from '~utils/api-error'
-import utils from '~api/services/utils.js'
 import cloudinaryService from './cloudinary.service'
 import variationService from './variations/variation.service'
-import models from '../models'
+import productService from './products/product.service'
 
 // #region '/categories/:id/products'
 // [GET] '/categories/:id/products'
 const getListProductByCategoryId = async (prisma, id) => {
   const categoryId = osHelpers.toNumber(id)
 
-  const category = await prisma.productCategory.findUnique({
-    where: { id: categoryId },
-    include: {
-      products: true,
-    },
-  })
-
-  const aggregate = await Promise.all(
-    category.products.map((item) => utils.aggregateProductItemPrice(item.id)),
+  const result = await productService.getProductsByCategoryId(
+    prisma,
+    categoryId,
   )
-
-  if (!category) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Category not found')
-  }
-
-  const result = {
-    ...category,
-    products: category.products.map((item, index) =>
-      models.productInstance(item, aggregate[index]),
-    ),
-  }
 
   return result
 }

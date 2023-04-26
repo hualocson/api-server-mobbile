@@ -46,6 +46,23 @@ const getProductsById = async (prisma, productId) => {
   return returnProduct
 }
 
+// [GET] '/categories/:id/products/'
+const getProductsByCategoryId = async (prisma, categoryId) => {
+  const id = osHelpers.toNumber(categoryId)
+  const products = await prisma.product.findMany({
+    where: { categoryId: id },
+  })
+
+  const aggregate = await Promise.all(
+    products.map((item) => utils.aggregateProductItemPrice(item.id)),
+  )
+
+  const result = products.map((item, index) =>
+    models.productInstance(item, aggregate[index]),
+  )
+  return result
+}
+
 // [PATCH] '/categories/products/:productId/image'
 const updateProductImage = async (prisma, productId, imageUrl) => {
   const id = osHelpers.toNumber(productId)
@@ -96,5 +113,6 @@ export default {
   createProduct,
   getProducts,
   getProductsById,
+  getProductsByCategoryId,
   updateProductImage,
 }
