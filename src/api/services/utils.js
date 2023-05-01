@@ -59,10 +59,19 @@ const checkPassword = async (password, hash) => {
   return validPassword
 }
 
+const checkProductItemExist = async (id) => {
+  const productItem = await prisma.productItem.findUnique({
+    where: { id },
+  })
+  if (productItem) return true
+  return false
+}
+
 export default {
   isVariationExists,
   aggregateProductItemPrice,
   hashPassword,
   checkEmailExist,
   checkPassword,
+  checkProductItemExist,
 }

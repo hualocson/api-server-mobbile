@@ -11,16 +11,17 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  role      Role     @default(USER)
-  email     String   @unique
+  id        Int           @id @default(autoincrement())
+  role      Role          @default(USER)
+  email     String        @unique
   firstName String
   lastName  String
   phone     String
   password  String
-  avatar    String   @default("https://res.cloudinary.com/dq3yexsrd/image/upload/v1681562228/mobileapp/user/user-avatar-base.png")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  avatar    String        @default("https://res.cloudinary.com/dq3yexsrd/image/upload/v1681562228/mobileapp/user/user-avatar-base.png")
+  cart      ShoppingCart?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 }
 
 enum Role {
@@ -54,6 +55,7 @@ model ProductItem {
   price                 Int
   productImage          String
   productConfigurations ProductConfiguration[]
+  shoppingCartItems     ShoppingCartItem[]
 }
 
 model Variation {
@@ -79,4 +81,22 @@ model ProductConfiguration {
   variationOptionId Int
 
   @@id([productItemId, variationOptionId])
+}
+
+model ShoppingCart {
+  id                Int                @id @default(autoincrement())
+  user              User               @relation(fields: [userId], references: [id])
+  userId            Int                @unique
+  shoppingCartItems ShoppingCartItem[]
+}
+
+model ShoppingCartItem {
+  id             Int          @id @default(autoincrement())
+  shoppingCart   ShoppingCart @relation(fields: [shoppingCartId], references: [id])
+  shoppingCartId Int
+  productItem    ProductItem  @relation(fields: [productItemId], references: [id])
+  productItemId  Int
+  qty            Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
