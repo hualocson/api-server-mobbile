@@ -23,6 +23,9 @@ const loginUserWithEmailAndPassword = async (prisma, email, password) => {
 const createUser = async (prisma, data) => {
   const { email, password, firstName, lastName, phone, avatar } = data
 
+  if (!email || !password || !firstName || !lastName || !phone)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Missing required fields')
+
   if (await serviceUtils.checkEmailExist(email))
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already exist')
 
@@ -37,7 +40,9 @@ const createUser = async (prisma, data) => {
         lastName,
         phone,
         avatar,
+        cart: { create: {} },
       },
+      select: { id: true, email: true },
     })
   } else {
     user = await prisma.user.create({
@@ -47,7 +52,9 @@ const createUser = async (prisma, data) => {
         firstName,
         lastName,
         phone,
+        cart: { create: {} },
       },
+      select: { id: true, email: true },
     })
   }
 
