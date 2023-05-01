@@ -6,3 +6,4 @@ dist_test/
 README.md
 .gitignore
 jsconfig.json
+package-lock.json
