@@ -4,3 +4,4 @@ prisma/migrations/
 build/
 dist_test/
 .env
+package-lock.json

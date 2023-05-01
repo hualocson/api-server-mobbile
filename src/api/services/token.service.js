@@ -56,11 +56,11 @@ const generateAuthTokens = async (user) => {
 }
 
 const verifyToken = (token, secret = configs.tokens.jwtAccessToken) => {
-  jwt.verify(token, secret, (err, decoded) => {
-    if (err) {
-      throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token')
-    }
+  try {
+    const decoded = jwt.verify(token, secret)
     return decoded
-  })
+  } catch (error) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token')
+  }
 }
 export default { generateToken, generateAuthTokens, verifyToken }
