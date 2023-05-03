@@ -56,7 +56,14 @@ const createProductItem = async (prisma, productId, body) => {
   const variationOptions = productConfigurations.map((item) => {
     return {
       variationOption: {
-        create: { ...item },
+        connectOrCreate: {
+          where: { id: item.variationOptionId },
+          create: {
+            id: item.variationOptionId,
+            variationId: item.variationId,
+            value: item.value,
+          },
+        },
       },
     }
   })
@@ -83,6 +90,7 @@ const createProductItem = async (prisma, productId, body) => {
   )
   if (!updatedProductItem)
     throw new ApiError(httpStatus.BAD_REQUEST, 'Create product item failed')
+
   return updatedProductItem
 }
 

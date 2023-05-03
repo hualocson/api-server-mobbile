@@ -4,11 +4,12 @@ import prisma from '~configs/prisma.client'
 import { variationService } from '~api/services'
 // [POST] '/categories/variations/options'
 const createVariationOption = catchAsync(async (req, res) => {
-  const { variationId, value } = req.body
+  const { categoryId, variationId, options } = req.body
   const variationOption = await variationService.createVariationOption(
     prisma,
+    categoryId,
     variationId,
-    value,
+    options,
   )
   responseHandler.created(res, { variationOption })
 }, prisma)

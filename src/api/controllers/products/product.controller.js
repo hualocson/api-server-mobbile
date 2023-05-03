@@ -12,7 +12,17 @@ const getProducts = catchAsync(async (req, res) => {
 const getProductsById = catchAsync(async (req, res) => {
   const { productId } = req.params
   const product = await productService.getProductsById(prisma, productId)
-  responseHandler.ok(res, { product })
+  responseHandler.ok(res, product)
+}, prisma)
+
+// [GET] '/categories/products/:productId/variations'
+const getProductVariationsByProductId = catchAsync(async (req, res) => {
+  const { productId } = req.params
+  const product = await productService.getProductVariationsByProductId(
+    prisma,
+    productId,
+  )
+  responseHandler.ok(res, product)
 }, prisma)
 
 // [POST] '/categories/products'
@@ -38,4 +48,5 @@ export default {
   getProducts,
   getProductsById,
   updateProductImage,
+  getProductVariationsByProductId,
 }

@@ -14,6 +14,19 @@ const isVariationExists = async (id) => {
     return false
   }
 }
+
+const isVariationInCategory = async (categoryId, variationId) => {
+  try {
+    const variation = await prisma.variation.findFirst({
+      where: { id: variationId, categoryId },
+    })
+    if (variation) return true
+    return false
+  } catch (error) {
+    console.log('Err', { error })
+    return false
+  }
+}
 // #endregion
 
 const aggregateProductItemPrice = (productId) => {
@@ -73,4 +86,5 @@ export default {
   checkEmailExist,
   checkPassword,
   checkProductItemExist,
+  isVariationInCategory,
 }
