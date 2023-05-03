@@ -4,25 +4,29 @@ import ApiError from '~utils/api-error'
 import utils from '../utils'
 
 // [POST] '/categories/variations/options'
-const createVariationOption = async (prisma, id, value) => {
-  const variationId = osHelpers.toNumber(id)
-
-  const isExist = await utils.isVariationExists(variationId)
+// add new variation option with categoryId and variationId
+const createVariationOption = async (prisma, categoryId, variationId, data) => {
+  console.log({ categoryId, variationId })
+  const isExist = await utils.isVariationInCategory(
+    osHelpers.toNumber(categoryId),
+    osHelpers.toNumber(variationId),
+  )
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Variation not found')
   }
-
-  const variationOption = await prisma.variationOption.create({
+  const createdVariationOptions = await prisma.variation.update({
+    where: {
+      id: variationId,
+    },
     data: {
-      value,
-      variation: {
-        connect: {
-          id: variationId,
+      variationOptions: {
+        createMany: {
+          data,
         },
       },
     },
   })
-  return variationOption
+  return createdVariationOptions
 }
 
 // [GET] '/categories/variations/options'

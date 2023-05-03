@@ -46,6 +46,41 @@ const getProductsById = async (prisma, productId) => {
   return returnProduct
 }
 
+// [GET] '/categories/products/:productId/variations'
+const getProductVariationsByProductId = async (prisma, productId) => {
+  const id = osHelpers.toNumber(productId)
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: {
+      productItems: {
+        select: {
+          id: true,
+          price: true,
+          productConfigurations: {
+            select: {
+              variationOption: {
+                select: {
+                  id: true,
+                  value: true,
+                  variation: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+
+  if (!product) throw new ApiError(httpStatus.NOT_FOUND, 'Product not found')
+  return product
+}
+
 // [GET] '/categories/:id/products/'
 const getProductsByCategoryId = async (prisma, categoryId) => {
   const id = osHelpers.toNumber(categoryId)
@@ -115,4 +150,5 @@ export default {
   getProductsById,
   getProductsByCategoryId,
   updateProductImage,
+  getProductVariationsByProductId,
 }

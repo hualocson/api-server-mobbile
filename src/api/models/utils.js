@@ -4,6 +4,7 @@ const productConfigurationsSelectOptions = {
       select: {
         variation: {
           select: {
+            id: true,
             name: true,
           },
         },
