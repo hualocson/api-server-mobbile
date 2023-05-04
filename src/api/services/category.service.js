@@ -35,9 +35,11 @@ const createVariationByCategoryId = async (prisma, id, body) => {
 // [GET] '/categories/:id/variations'
 const getListVariationByCategoryId = async (prisma, id) => {
   const categoryId = osHelpers.toNumber(id)
-  const category = await prisma.productCategory.findUnique({
-    where: { id: categoryId },
-    include: { variations: true },
+  const category = await prisma.variation.findMany({
+    where: { categoryId },
+    include: {
+      variationOptions: true,
+    },
   })
   return category
 }

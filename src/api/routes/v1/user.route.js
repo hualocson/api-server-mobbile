@@ -4,6 +4,9 @@ import { userController } from '~api/controllers/index.js'
 
 const router = express.Router()
 
+// [GET] /api/v1/users/profile
+router.get('/profile', middlewares.isAuth, userController.getUserProfile)
+
 // get all users
 // [GET] /api/v1/users
 router.get('/', middlewares.isAuth, userController.getAllUser)

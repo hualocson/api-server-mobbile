@@ -51,7 +51,7 @@ const getListVariationByCategoryId = catchAsync(async (req, res) => {
     id,
   )
 
-  responseHandler.ok(res, { variations })
+  responseHandler.ok(res, variations)
 }, prisma)
 
 // #endregion variations

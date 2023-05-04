@@ -11,6 +11,12 @@ router.post('/:productId/items', productController.createProductItem)
 // [PATCH] /api/v1/categories/products/:productId/image
 router.patch('/:productId/image', productController.updateProductImage)
 
+// [GET] /api/v1/categories/products/:productId/variations
+router.get(
+  '/:productId/variations',
+  productController.getProductVariationsByProductId,
+)
+
 // get product by id
 // [GET] /api/v1/categories/products/:productId
 router.get('/:productId', productController.getProductsById)

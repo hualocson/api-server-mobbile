@@ -28,4 +28,11 @@ const signIn = catchAsync(async (req, res) => {
   responseHandler.ok(res, tokens)
 }, prisma)
 
-export default { getAllUser, signUp, signIn }
+// [GET] '/users/profile'
+const getUserProfile = catchAsync(async (req, res) => {
+  const { id } = req.payload.sub
+  const user = await userService.getUserProfile(prisma, id)
+  responseHandler.ok(res, user)
+}, prisma)
+
+export default { getAllUser, signUp, signIn, getUserProfile }

@@ -44,14 +44,10 @@ const generateAuthTokens = async (user) => {
   )
 
   return {
-    access: {
-      token: accessToken,
-      expires: accessTokenExpires.toDate(),
-    },
-    refresh: {
-      token: refreshToken,
-      expires: refreshTokenExpires.toDate(),
-    },
+    accessToken,
+    expiresAccess: accessTokenExpires.toDate(),
+    refreshToken,
+    expiresRefresh: refreshTokenExpires.toDate(),
   }
 }
 
