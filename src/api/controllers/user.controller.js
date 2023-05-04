@@ -35,4 +35,49 @@ const getUserProfile = catchAsync(async (req, res) => {
   responseHandler.ok(res, user)
 }, prisma)
 
-export default { getAllUser, signUp, signIn, getUserProfile }
+// #region address
+// [GET] '/users/addresses'
+const getAllAddress = catchAsync(async (req, res) => {
+  const { id } = req.payload.sub
+  const { flag } = req.query
+  const addresses = await userService.getAllAddress(prisma, id, flag)
+  responseHandler.ok(res, addresses)
+}, prisma)
+
+// [POST] '/users/addresses'
+const createAddress = catchAsync(async (req, res) => {
+  const { id } = req.payload.sub
+  const data = req.body
+  const address = await userService.createAddress(prisma, id, data)
+  responseHandler.created(res, address)
+}, prisma)
+
+// [PATCH] '/users/addresses/:addressId'
+const updateAddress = catchAsync(async (req, res) => {
+  const { id } = req.payload.sub
+  const { addressId } = req.params
+  const data = req.body
+  const address = await userService.updateAddress(prisma, id, addressId, data)
+  responseHandler.ok(res, address)
+}, prisma)
+
+// [DELETE] '/users/addresses/:addressId'
+const deleteAddress = catchAsync(async (req, res) => {
+  const { id } = req.payload.sub
+  const { addressId } = req.params
+  const address = await userService.deleteAddress(prisma, id, addressId)
+  responseHandler.ok(res, address)
+}, prisma)
+
+// #endregion
+
+export default {
+  getAllUser,
+  signUp,
+  signIn,
+  getUserProfile,
+  getAllAddress,
+  createAddress,
+  updateAddress,
+  deleteAddress,
+}

@@ -6,7 +6,6 @@ import utils from '../utils'
 // [POST] '/categories/variations/options'
 // add new variation option with categoryId and variationId
 const createVariationOption = async (prisma, categoryId, variationId, data) => {
-  console.log({ categoryId, variationId })
   const isExist = await utils.isVariationInCategory(
     osHelpers.toNumber(categoryId),
     osHelpers.toNumber(variationId),

@@ -27,7 +27,7 @@ const toNumber = (value) => {
 }
 
 const toBool = (value) => {
-  return value === 'true'
+  return value === 'true' || value
 }
 
 export default {
