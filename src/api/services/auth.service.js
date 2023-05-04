@@ -60,7 +60,16 @@ const createUser = async (prisma, data) => {
 
   return user
 }
+
+// [POST] '/users/email'
+const checkUserEmail = async (prisma, email) => {
+  const user = await userService.getUserByEmail(prisma, email)
+  if (user) throw new ApiError(httpStatus.BAD_REQUEST, 'Email already exist')
+  return { message: 'Email is valid' }
+}
+
 export default {
   loginUserWithEmailAndPassword,
   createUser,
+  checkUserEmail,
 }
