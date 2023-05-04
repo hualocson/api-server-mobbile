@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import categoryRoute from './category.route.js'
 import cartRoute from './cart.route.js'
-import userRoute from './user.route.js'
+import userRoute from './users/index'
 import apidocsRoute from './apidocs.route.js'
 
 const router = Router()
