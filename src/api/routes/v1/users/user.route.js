@@ -19,4 +19,8 @@ router.post('/signup', userController.signUp)
 // [POST] /api/v1/users/signin
 router.post('/signin', userController.signIn)
 
+// check email
+// [POST] 'api/v1/users/email'
+router.post('/email', userController.checkUserEmail)
+
 export default router
