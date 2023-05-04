@@ -28,6 +28,13 @@ const signIn = catchAsync(async (req, res) => {
   responseHandler.ok(res, tokens)
 }, prisma)
 
+// [POST] '/users/email'
+const checkUserEmail = catchAsync(async (req, res) => {
+  const { email } = req.body
+  const message = await authService.checkUserEmail(prisma, email)
+  responseHandler.ok(res, message)
+}, prisma)
+
 // [GET] '/users/profile'
 const getUserProfile = catchAsync(async (req, res) => {
   const { id } = req.payload.sub
@@ -80,4 +87,5 @@ export default {
   createAddress,
   updateAddress,
   deleteAddress,
+  checkUserEmail,
 }
