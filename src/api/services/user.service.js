@@ -22,14 +22,55 @@ const getUserProfile = async (prisma, userId) => {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
+      id: true,
       email: true,
       firstName: true,
       lastName: true,
       phone: true,
       avatar: true,
+      gender: true,
     },
   })
   return user
+}
+
+// [PATCH] /users/:id => update user
+const updateUser = async (prisma, userId, data) => {
+  const { firstName, lastName, phone, avatar, gender } = data
+  if (
+    gender !== 'UNKNOWN' &&
+    gender !== 'MALE' &&
+    gender !== 'FEMALE' &&
+    gender !== 'OTHER'
+  )
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Missing required fields')
+  const user = await prisma.user.findUnique({
+    where: { id: osHelpers.toNumber(userId) },
+  })
+
+  if (!user) throw new ApiError(httpStatus.NOT_FOUND, 'User not found')
+
+  const updatedUser = await prisma.user.update({
+    where: { id: osHelpers.toNumber(userId) },
+    data: {
+      firstName: firstName || user.firstName,
+      lastName: lastName || user.lastName,
+      phone: phone || user.phone,
+      avatar: avatar || user.avatar,
+      gender,
+    },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      phone: true,
+      avatar: true,
+      gender: true,
+    },
+  })
+
+  return updatedUser
 }
 
 // #region address
@@ -209,4 +250,5 @@ export default {
   getAllAddress,
   updateAddress,
   deleteAddress,
+  updateUser,
 }

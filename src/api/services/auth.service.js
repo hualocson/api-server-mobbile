@@ -21,9 +21,17 @@ const loginUserWithEmailAndPassword = async (prisma, email, password) => {
 
 // [POST] '/users/signup'
 const createUser = async (prisma, data) => {
-  const { email, password, firstName, lastName, phone, avatar } = data
+  const { email, password, firstName, lastName, phone, avatar, gender } = data
 
   if (!email || !password || !firstName || !lastName || !phone)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Missing required fields')
+
+  if (
+    gender !== 'UNKNOWN' &&
+    gender !== 'MALE' &&
+    gender !== 'FEMALE' &&
+    gender !== 'OTHER'
+  )
     throw new ApiError(httpStatus.BAD_REQUEST, 'Missing required fields')
 
   if (await serviceUtils.checkEmailExist(email))
@@ -40,6 +48,7 @@ const createUser = async (prisma, data) => {
         lastName,
         phone,
         avatar,
+        gender,
         cart: { create: {} },
       },
       select: { id: true, email: true },
@@ -52,6 +61,7 @@ const createUser = async (prisma, data) => {
         firstName,
         lastName,
         phone,
+        gender,
         cart: { create: {} },
       },
       select: { id: true, email: true },
