@@ -20,9 +20,17 @@ model User {
   password  String
   avatar    String        @default("https://res.cloudinary.com/dq3yexsrd/image/upload/v1681562228/mobileapp/user/user-avatar-base.png")
   addresses Address[]
+  gender    Gender?       @default(UNKNOWN)
   cart      ShoppingCart?
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  UNKNOWN
 }
 
 model Address {

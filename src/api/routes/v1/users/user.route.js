@@ -23,4 +23,8 @@ router.post('/signin', userController.signIn)
 // [POST] 'api/v1/users/email'
 router.post('/email', userController.checkUserEmail)
 
+// update user
+// [PATCH] /api/v1/users
+router.patch('/', middlewares.isAuth, userController.updateUser)
+
 export default router

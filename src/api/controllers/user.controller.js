@@ -42,6 +42,14 @@ const getUserProfile = catchAsync(async (req, res) => {
   responseHandler.ok(res, user)
 }, prisma)
 
+// [PATCH] '/users' => Update user
+const updateUser = catchAsync(async (req, res) => {
+  const { id } = req.payload.sub
+  const data = req.body
+  const user = await userService.updateUser(prisma, id, data)
+  responseHandler.ok(res, user)
+}, prisma)
+
 // #region address
 // [GET] '/users/addresses'
 const getAllAddress = catchAsync(async (req, res) => {
@@ -88,4 +96,5 @@ export default {
   updateAddress,
   deleteAddress,
   checkUserEmail,
+  updateUser,
 }
