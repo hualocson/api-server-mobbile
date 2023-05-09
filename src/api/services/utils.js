@@ -23,7 +23,6 @@ const isVariationInCategory = async (categoryId, variationId) => {
     if (variation) return true
     return false
   } catch (error) {
-    console.log('Err', { error })
     return false
   }
 }

@@ -141,7 +141,10 @@ const getAllAddress = async (prisma, userId, flag) => {
 
   const addresses = await prisma.address.findMany({
     where: { ...condition },
-    orderBy: { createdAt: 'asc' },
+    orderBy: [
+      { isDefault: 'desc' }, // default address first
+      { id: 'asc' },
+    ],
   })
 
   return addresses
