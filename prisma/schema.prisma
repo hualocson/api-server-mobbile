@@ -34,13 +34,6 @@ enum Gender {
   UNKNOWN
 }
 
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-  UNKNOWN
-}
-
 model Address {
   id             Int      @id @default(autoincrement())
   name           String
