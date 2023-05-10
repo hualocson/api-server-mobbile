@@ -17,7 +17,7 @@ const getProducts = async (prisma) => {
     models.productInstance(item, aggregate[index]),
   )
 
-  return { result }
+  return result
 }
 
 // [GET] '/categories/products/:productId'

@@ -4,8 +4,8 @@ import prisma from '~configs/prisma.client'
 import { productService } from '~api/services'
 // [GET] '/categories/products'
 const getProducts = catchAsync(async (req, res) => {
-  const { result } = await productService.getProducts(prisma)
-  responseHandler.ok(res, { products: result })
+  const products = await productService.getProducts(prisma)
+  responseHandler.ok(res, products)
 }, prisma)
 
 // [GET] '/categories/products/:productId'

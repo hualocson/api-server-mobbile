@@ -24,6 +24,14 @@ model User {
   cart      ShoppingCart?
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+  orders    Order[]
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  UNKNOWN
 }
 
 enum Gender {
@@ -46,6 +54,7 @@ model Address {
   isDefault      Boolean  @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  orders          Order[]
 }
 
 enum Role {
@@ -80,6 +89,7 @@ model ProductItem {
   productImage          String
   productConfigurations ProductConfiguration[]
   shoppingCartItems     ShoppingCartItem[]
+  orderLines             OrderLine[]
 }
 
 model Variation {
@@ -123,4 +133,57 @@ model ShoppingCartItem {
   qty            Int
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+}
+
+model ShippingMethod {
+  id     Int     @id @default(autoincrement())
+  name   String
+  price  Int
+  orders Order[]
+}
+
+enum PaymentType {
+  CASH_ON_DELIVERY
+  CREDIT_CARD
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id                Int            @id @default(autoincrement())
+  user              User           @relation(fields: [userId], references: [id])
+  userId            Int
+  orderTotal        Int
+  shippingMethodId  Int
+  shippingMethod    ShippingMethod @relation(fields: [shippingMethodId], references: [id])
+  shippingAddress   Address        @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId Int
+  orderStatus       OrderStatus    @default(PENDING)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  orderLines        OrderLine[]
+}
+
+model OrderLine {
+  id            Int         @id @default(autoincrement())
+  productItem   ProductItem @relation(fields: [productItemId], references: [id])
+  productItemId Int
+  order         Order       @relation(fields: [orderId], references: [id])
+  orderId       Int
+  qty           Int
+  price         Int
+}
+
+model News {
+  id       Int      @id @default(autoincrement())
+  title    String
+  content  String
+  imageUrl String?
+  author   String?
+  date     DateTime @default(now())
 }

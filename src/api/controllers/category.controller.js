@@ -25,7 +25,7 @@ const getListProductByCategoryId = catchAsync(async (req, res) => {
 
   const products = await categoryService.getListProductByCategoryId(prisma, id)
 
-  responseHandler.ok(res, { products })
+  responseHandler.ok(res, products)
 }, prisma)
 
 // #region variations

@@ -1,5 +1,6 @@
 import express from 'express'
 import middlewares from '~api/middlewares'
+import cloudinaryService from '~/api/services/cloudinary.service'
 import { userController } from '~api/controllers/index.js'
 
 const router = express.Router()
@@ -26,5 +27,14 @@ router.post('/email', userController.checkUserEmail)
 // update user
 // [PATCH] /api/v1/users
 router.patch('/', middlewares.isAuth, userController.updateUser)
+
+// update user avatar
+// [PATCH] /api/v1/users/avatar
+router.patch(
+  '/avatar',
+  middlewares.isAuth,
+  cloudinaryService.getUploader().single('avatar'),
+  userController.updateUserAvatar,
+)
 
 export default router
