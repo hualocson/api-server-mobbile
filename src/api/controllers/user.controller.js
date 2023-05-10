@@ -50,6 +50,14 @@ const updateUser = catchAsync(async (req, res) => {
   responseHandler.ok(res, user)
 }, prisma)
 
+// [PATCH] '/users/avatar' => Update user avatar
+const updateUserAvatar = catchAsync(async (req, res) => {
+  const { id } = req.payload.sub
+  const avatarPath = req.file.path
+  const updatedUser = await userService.updateUserAvatar(prisma, id, avatarPath)
+  responseHandler.ok(res, updatedUser)
+}, prisma)
+
 // #region address
 // [GET] '/users/addresses'
 const getAllAddress = catchAsync(async (req, res) => {
@@ -97,4 +105,5 @@ export default {
   deleteAddress,
   checkUserEmail,
   updateUser,
+  updateUserAvatar,
 }

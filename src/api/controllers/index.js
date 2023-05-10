@@ -3,6 +3,7 @@ import userController from './user.controller'
 import productController from './products'
 import variationController from './variations'
 import cartController from './cart.controller'
+import shippingController from './shipping.controller'
 
 export {
   categoryController,
@@ -10,4 +11,5 @@ export {
   userController,
   productController,
   variationController,
+  shippingController,
 }

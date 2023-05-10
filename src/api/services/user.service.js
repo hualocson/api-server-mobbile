@@ -1,6 +1,7 @@
 import ApiError from '~/utils/api-error'
 import httpStatus from 'http-status'
 import { osHelpers } from '~helpers/index'
+import cloudinaryService from './cloudinary.service'
 
 // [GET] '/users/'
 const getListUser = async (prisma) => {
@@ -32,6 +33,27 @@ const getUserProfile = async (prisma, userId) => {
     },
   })
   return user
+}
+
+// [PATCH] '/users/avatar'
+const updateUserAvatar = async (prisma, userId, avatarFilePath) => {
+  const user = await prisma.user.findUnique({
+    where: { id: osHelpers.toNumber(userId) },
+  })
+
+  if (!user) throw new ApiError(httpStatus.NOT_FOUND, 'User not found')
+
+  const newAvatarURL = await cloudinaryService.uploadUserAvatar(
+    userId,
+    avatarFilePath,
+  )
+
+  const updatedUser = await prisma.user.update({
+    where: { id: osHelpers.toNumber(userId) },
+    data: { avatar: newAvatarURL },
+  })
+
+  return updatedUser
 }
 
 // [PATCH] /users/:id => update user
@@ -254,4 +276,5 @@ export default {
   updateAddress,
   deleteAddress,
   updateUser,
+  updateUserAvatar,
 }
