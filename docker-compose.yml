@@ -4,8 +4,10 @@ services:
     container_name: api-server-container
     restart: unless-stopped
     build: .
+    buildOptions:
+      noCache: true
     image: nodeapp:v1.0
     ports:
-        - 5001:5001
+      - 5001:5001
     expose:
-        - 5001
+      - 5001
