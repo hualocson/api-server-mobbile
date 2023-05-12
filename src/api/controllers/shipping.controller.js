@@ -11,8 +11,14 @@ const getAllShippings = catchAsync(async (req, res) => {
 
 // [POST] '/shippings' => Create new shipping
 const createShipping = catchAsync(async (req, res) => {
-  const { name, price } = req.body
-  const shipping = await shippingService.createShipping(prisma, name, price)
+  const { name, price, desc, icon } = req.body
+  const shipping = await shippingService.createShipping(
+    prisma,
+    name,
+    price,
+    desc,
+    icon,
+  )
   responseHandler.created(res, shipping)
 }, prisma)
 

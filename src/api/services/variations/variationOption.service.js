@@ -15,7 +15,7 @@ const createVariationOption = async (prisma, categoryId, variationId, data) => {
   }
   const createdVariationOptions = await prisma.variation.update({
     where: {
-      id: variationId,
+      id: osHelpers.toNumber(variationId),
     },
     data: {
       variationOptions: {

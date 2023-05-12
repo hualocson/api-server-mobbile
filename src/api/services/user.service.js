@@ -51,6 +51,15 @@ const updateUserAvatar = async (prisma, userId, avatarFilePath) => {
   const updatedUser = await prisma.user.update({
     where: { id: osHelpers.toNumber(userId) },
     data: { avatar: newAvatarURL },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      phone: true,
+      avatar: true,
+      gender: true,
+    },
   })
 
   return updatedUser

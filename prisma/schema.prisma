@@ -47,7 +47,7 @@ model Address {
   isDefault      Boolean  @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  orders          Order[]
+  orders         Order[]
 }
 
 enum Role {
@@ -82,7 +82,7 @@ model ProductItem {
   productImage          String
   productConfigurations ProductConfiguration[]
   shoppingCartItems     ShoppingCartItem[]
-  orderLines             OrderLine[]
+  orderLines            OrderLine[]
 }
 
 model Variation {
@@ -129,10 +129,12 @@ model ShoppingCartItem {
 }
 
 model ShippingMethod {
-  id     Int     @id @default(autoincrement())
-  name   String
-  price  Int
-  orders Order[]
+  id          Int     @id @default(autoincrement())
+  name        String
+  price       Int
+  description String
+  iconUrl     String
+  orders      Order[]
 }
 
 enum PaymentType {
