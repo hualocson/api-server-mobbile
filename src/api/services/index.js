@@ -6,6 +6,8 @@ import shippingService from './shipping.service.js'
 import tokenService from './token.service.js'
 import productService from './products'
 import variationService from './variations/index.js'
+import orderService from './order.service.js'
+import newsService from './news.service.js'
 
 export {
   authService,
@@ -16,4 +18,6 @@ export {
   productService,
   variationService,
   shippingService,
+  orderService,
+  newsService,
 }

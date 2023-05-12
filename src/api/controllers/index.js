@@ -4,6 +4,8 @@ import productController from './products'
 import variationController from './variations'
 import cartController from './cart.controller'
 import shippingController from './shipping.controller'
+import orderController from './order.controller'
+import newsController from './news.controller'
 
 export {
   categoryController,
@@ -12,4 +14,6 @@ export {
   productController,
   variationController,
   shippingController,
+  orderController,
+  newsController,
 }

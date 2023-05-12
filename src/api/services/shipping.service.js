@@ -1,6 +1,7 @@
 import httpStatus from 'http-status'
 import { osHelpers } from '~/helpers/index'
 import ApiError from '~utils/api-error'
+import cloudinaryService from './cloudinary.service'
 
 // [GET] '/shippings' => Get all shippings
 const getAllShippings = async (prisma) => {
@@ -10,14 +11,25 @@ const getAllShippings = async (prisma) => {
 }
 
 // [POST] '/shippings' => Create new shipping
-const createShipping = async (prisma, name, price) => {
-  if (!name || !price)
+const createShipping = async (prisma, name, price, desc, icon) => {
+  if (!name || !price || !desc || !icon)
     throw new ApiError(httpStatus.BAD_REQUEST, 'Missing required fields')
+
+  const iconUrl = await cloudinaryService.uploadImage(
+    icon,
+    '/mobileapp/shipping',
+    `${name}-icon`,
+  )
+
+  if (!iconUrl)
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Upload icon failed')
 
   const shipping = await prisma.shippingMethod.create({
     data: {
       name,
       price: osHelpers.toNumber(price),
+      description: desc,
+      iconUrl,
     },
   })
 
@@ -32,8 +44,8 @@ const createShipping = async (prisma, name, price) => {
 
 // [PATCH] '/shippings/:id' => Update shipping
 const updateShipping = async (prisma, shippingId, data) => {
-  const { name, price } = data
-  if (!name && !price)
+  const { name, price, desc } = data
+  if (!name && !price && !desc)
     throw new ApiError(httpStatus.BAD_REQUEST, 'Missing required fields')
 
   const shipping = await prisma.shippingMethod.findUnique({
@@ -47,6 +59,7 @@ const updateShipping = async (prisma, shippingId, data) => {
     data: {
       name: name || shipping.name,
       price: osHelpers.toNumber(price) || shipping.price,
+      description: desc || shipping.description,
     },
   })
 
