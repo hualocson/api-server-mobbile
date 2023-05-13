@@ -1,6 +1,7 @@
 import httpStatus from 'http-status'
 import { osHelpers } from '~/helpers/index'
 import ApiError from '~utils/api-error'
+import productService from './products/product.service'
 
 // [GET] /orders => Get all Orders
 const getAllOrders = async (prisma, userId) => {
@@ -19,12 +20,35 @@ const getAllOrders = async (prisma, userId) => {
           productItemId: true,
           orderId: true,
           price: true,
+          productItem: {
+            select: {
+              productImage: true,
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
       },
     },
   })
 
-  return orders
+  const result = orders.map((order) => ({
+    ...order,
+    orderLines: order.orderLines.map((orderLine) => ({
+      id: orderLine.id,
+      qty: orderLine.qty,
+      productItemId: orderLine.productItemId,
+      orderId: orderLine.orderId,
+      price: orderLine.price,
+      name: orderLine.productItem.product.name,
+      img: orderLine.productItem.productImage,
+    })),
+  }))
+  return result
 }
 
 // [POST] /orders => Create new Order
