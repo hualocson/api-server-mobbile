@@ -1,7 +1,6 @@
 import httpStatus from 'http-status'
 import { osHelpers } from '~/helpers/index'
 import ApiError from '~utils/api-error'
-import productService from './products/product.service'
 
 // [GET] /orders => Get all Orders
 const getAllOrders = async (prisma, userId) => {
