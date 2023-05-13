@@ -17,7 +17,25 @@ const createOrder = catchAsync(async (req, res) => {
   responseHandler.created(res, order)
 }, prisma)
 
+// [GET] '/orders/:id' => Get order by id
+const getOrderById = catchAsync(async (req, res) => {
+  const { id } = req.params
+  const user = req.payload.sub
+  const order = await orderService.getOrderById(prisma, user.id, id)
+  responseHandler.ok(res, order)
+}, prisma)
+
+// [PATCH] '/orders/:id/status' => Update order by id
+const updateOrderById = catchAsync(async (req, res) => {
+  const { id } = req.params
+  const { status } = req.body
+  const order = await orderService.updateOrderStatusById(prisma, id, status)
+  responseHandler.ok(res, order)
+}, prisma)
+
 export default {
   getAllShippings,
+  getOrderById,
   createOrder,
+  updateOrderById,
 }
