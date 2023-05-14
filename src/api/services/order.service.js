@@ -97,7 +97,76 @@ const createOrder = async (prisma, userId, data) => {
   return order
 }
 
+// [GET] /orders/:id => Get Order by Id
+const getOrderById = async (prisma, userId, id) => {
+  const order = await prisma.order.findFirst({
+    where: { id: osHelpers.toNumber(id), userId: osHelpers.toNumber(userId) },
+    select: {
+      id: true,
+      orderTotal: true,
+      shippingMethodId: true,
+      shippingAddressId: true,
+      orderStatus: true,
+      orderLines: {
+        select: {
+          id: true,
+          qty: true,
+          productItemId: true,
+          orderId: true,
+          price: true,
+          productItem: {
+            select: {
+              productImage: true,
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+
+  if (!order) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order not found')
+  }
+
+  const result = {
+    ...order,
+    orderLines: order.orderLines.map((orderLine) => ({
+      id: orderLine.id,
+      qty: orderLine.qty,
+      productItemId: orderLine.productItemId,
+      orderId: orderLine.orderId,
+      price: orderLine.price,
+      name: orderLine.productItem.product.name,
+      img: orderLine.productItem.productImage,
+    })),
+  }
+  return result
+}
+
+// [PATCH] /orders/:id/status => Update Order by Id
+const updateOrderStatusById = async (prisma, id, status) => {
+  if (!status)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Missing required fields')
+  const validStatuses = ['PENDING', 'PROCESSING', 'DELIVERED', 'CANCELLED']
+  if (!validStatuses.includes(status))
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid status')
+  const order = await prisma.order.update({
+    where: { id: osHelpers.toNumber(id) },
+    data: { orderStatus: status },
+  })
+
+  return order
+}
+
 export default {
   createOrder,
   getAllOrders,
+  getOrderById,
+  updateOrderStatusById,
 }

@@ -24,4 +24,16 @@ const isAuth = (req, res, next) => {
   next()
 }
 
-export default isAuth
+const isAdmin = (req, res, next) => {
+  const token = getTokenFromHeaders(req)
+  if (!token)
+    throw new ApiError(httpStatus.UNAUTHORIZED, "You're not authorized")
+  const decoded = tokenService.verifyToken(token)
+  if (decoded.sub.role !== 'ADMIN')
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Forbidden.')
+
+  req.payload = decoded
+  next()
+}
+
+export default { isAuth, isAdmin }

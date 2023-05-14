@@ -1,3 +1,3 @@
 import isAuth from './isAuth'
 
-export default { isAuth }
+export default { ...isAuth }
