@@ -24,10 +24,6 @@ router.post('/signin', userController.signIn)
 // [POST] 'api/v1/users/email'
 router.post('/email', userController.checkUserEmail)
 
-// update user
-// [PATCH] /api/v1/users
-router.patch('/', middlewares.isAuth, userController.updateUser)
-
 // update user avatar
 // [PATCH] /api/v1/users/avatar
 router.patch(
@@ -36,5 +32,13 @@ router.patch(
   cloudinaryService.getUploader().single('avatar'),
   userController.updateUserAvatar,
 )
+
+// update user password
+// [PATCH] /api/v1/users/password
+router.patch('/password', middlewares.isAuth, userController.updateUserPassword)
+
+// update user
+// [PATCH] /api/v1/users
+router.patch('/', middlewares.isAuth, userController.updateUser)
 
 export default router

@@ -50,6 +50,19 @@ const updateUser = catchAsync(async (req, res) => {
   responseHandler.ok(res, user)
 }, prisma)
 
+// [PATCH] '/users/password' => Update user password
+const updateUserPassword = catchAsync(async (req, res) => {
+  const { id } = req.payload.sub
+  const { oldPassword, newPassword } = req.body
+  const user = await userService.updateUserPassword(
+    prisma,
+    id,
+    oldPassword,
+    newPassword,
+  )
+  responseHandler.ok(res, user)
+}, prisma)
+
 // [PATCH] '/users/avatar' => Update user avatar
 const updateUserAvatar = catchAsync(async (req, res) => {
   const { id } = req.payload.sub
@@ -106,4 +119,5 @@ export default {
   checkUserEmail,
   updateUser,
   updateUserAvatar,
+  updateUserPassword,
 }

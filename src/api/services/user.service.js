@@ -1,6 +1,7 @@
 import ApiError from '~/utils/api-error'
 import httpStatus from 'http-status'
 import { osHelpers } from '~helpers/index'
+import { checkPassword, hashPassword } from '~utils/index.js'
 import cloudinaryService from './cloudinary.service'
 
 // [GET] '/users/'
@@ -102,6 +103,32 @@ const updateUser = async (prisma, userId, data) => {
   })
 
   return updatedUser
+}
+
+// [PATCH] /users/password => update user password
+const updateUserPassword = async (prisma, userId, oldPassword, newPassword) => {
+  const user = await prisma.user.findUnique({
+    where: { id: osHelpers.toNumber(userId) },
+  })
+
+  if (!user) throw new ApiError(httpStatus.NOT_FOUND, 'User not found')
+
+  const validPassword = await checkPassword(oldPassword, user.password)
+
+  if (!newPassword || !validPassword)
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Missing required fields or password is the same',
+    )
+  const hash = await hashPassword(newPassword)
+  const newUser = await prisma.user.update({
+    where: { id: osHelpers.toNumber(userId) },
+    data: { password: hash },
+  })
+
+  if (!newUser)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Update password failed')
+  return { message: 'Update Success' }
 }
 
 // #region address
@@ -286,4 +313,5 @@ export default {
   deleteAddress,
   updateUser,
   updateUserAvatar,
+  updateUserPassword,
 }
