@@ -3,37 +3,74 @@ import { osHelpers } from '~/helpers/index'
 import ApiError from '~utils/api-error'
 
 // [GET] /orders => Get all Orders
-const getAllOrders = async (prisma, userId) => {
-  const orders = await prisma.order.findMany({
-    where: { userId: osHelpers.toNumber(userId) },
-    select: {
-      id: true,
-      orderTotal: true,
-      shippingMethodId: true,
-      shippingAddressId: true,
-      orderStatus: true,
-      orderLines: {
-        select: {
-          id: true,
-          qty: true,
-          productItemId: true,
-          orderId: true,
-          price: true,
-          productItem: {
-            select: {
-              productImage: true,
-              product: {
-                select: {
-                  id: true,
-                  name: true,
+const getAllOrders = async (prisma, userId, role, sort) => {
+  let defSort = 'desc'
+  if (sort === 'asc') defSort = sort
+  let orders = []
+  if (role === 'ADMIN') {
+    orders = await prisma.order.findMany({
+      select: {
+        id: true,
+        orderTotal: true,
+        shippingMethodId: true,
+        shippingAddressId: true,
+        orderStatus: true,
+        orderLines: {
+          select: {
+            id: true,
+            qty: true,
+            productItemId: true,
+            orderId: true,
+            price: true,
+            productItem: {
+              select: {
+                productImage: true,
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
                 },
               },
             },
           },
         },
       },
-    },
-  })
+      orderBy: { createdAt: defSort },
+    })
+  } else {
+    orders = await prisma.order.findMany({
+      where: { userId: osHelpers.toNumber(userId) },
+      select: {
+        id: true,
+        orderTotal: true,
+        shippingMethodId: true,
+        shippingAddressId: true,
+        orderStatus: true,
+        orderLines: {
+          select: {
+            id: true,
+            qty: true,
+            productItemId: true,
+            orderId: true,
+            price: true,
+            productItem: {
+              select: {
+                productImage: true,
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: defSort },
+    })
+  }
 
   const result = orders.map((order) => ({
     ...order,

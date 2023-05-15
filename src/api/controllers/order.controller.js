@@ -3,10 +3,11 @@ import catchAsync from '~utils/catch-async.js'
 import prisma from '~configs/prisma.client'
 import { orderService } from '~api/services'
 
-// [GET] '/orders' => Get all shippings
-const getAllShippings = catchAsync(async (req, res) => {
-  const { id } = req.payload.sub
-  const orders = await orderService.getAllOrders(prisma, id)
+// [GET] '/orders' => Get all order
+const getAllOrders = catchAsync(async (req, res) => {
+  const { id, role } = req.payload.sub
+  const { sort } = req.query
+  const orders = await orderService.getAllOrders(prisma, id, role, sort)
   responseHandler.ok(res, orders)
 }, prisma)
 
@@ -34,7 +35,7 @@ const updateOrderById = catchAsync(async (req, res) => {
 }, prisma)
 
 export default {
-  getAllShippings,
+  getAllOrders,
   getOrderById,
   createOrder,
   updateOrderById,
