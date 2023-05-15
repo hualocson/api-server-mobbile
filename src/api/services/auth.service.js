@@ -3,6 +3,7 @@ import { checkPassword } from '~utils/index.js'
 import ApiError from '~utils/api-error.js'
 import serviceUtils from '~api/services/utils.js'
 import userService from './user.service.js'
+import userModel from '../models/user.model.js'
 
 // [POST] '/users/signin'
 const loginUserWithEmailAndPassword = async (prisma, email, password) => {
@@ -51,7 +52,7 @@ const createUser = async (prisma, data) => {
         gender,
         cart: { create: {} },
       },
-      select: { id: true, email: true },
+      select: { ...userModel },
     })
   } else {
     user = await prisma.user.create({
@@ -64,7 +65,7 @@ const createUser = async (prisma, data) => {
         gender,
         cart: { create: {} },
       },
-      select: { id: true, email: true },
+      select: { ...userModel },
     })
   }
 
