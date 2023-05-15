@@ -3,6 +3,7 @@ import httpStatus from 'http-status'
 import { osHelpers } from '~helpers/index'
 import { checkPassword, hashPassword } from '~utils/index.js'
 import cloudinaryService from './cloudinary.service'
+import userModel from '../models/user.model'
 
 // [GET] '/users/'
 const getListUser = async (prisma) => {
@@ -24,13 +25,7 @@ const getUserProfile = async (prisma, userId) => {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      phone: true,
-      avatar: true,
-      gender: true,
+      ...userModel,
     },
   })
   return user
@@ -53,13 +48,7 @@ const updateUserAvatar = async (prisma, userId, avatarFilePath) => {
     where: { id: osHelpers.toNumber(userId) },
     data: { avatar: newAvatarURL },
     select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      phone: true,
-      avatar: true,
-      gender: true,
+      ...userModel,
     },
   })
 
@@ -92,13 +81,7 @@ const updateUser = async (prisma, userId, data) => {
       gender,
     },
     select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      phone: true,
-      avatar: true,
-      gender: true,
+      ...userModel,
     },
   })
 
