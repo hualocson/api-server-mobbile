@@ -6,7 +6,7 @@ import { userService, authService, tokenService } from '~api/services/index.js'
 // [GET] '/users/'
 const getAllUser = catchAsync(async (req, res) => {
   const { allUsers } = await userService.getListUser(prisma)
-  responseHandler.ok(res, { users: allUsers })
+  responseHandler.ok(res, allUsers)
 }, prisma)
 
 // [POST] '/users/signup'
