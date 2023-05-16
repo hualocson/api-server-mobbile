@@ -7,7 +7,11 @@ import userModel from '../models/user.model'
 
 // [GET] '/users/'
 const getListUser = async (prisma) => {
-  const allUsers = await prisma.user.findMany()
+  const allUsers = await prisma.user.findMany({
+    select: {
+      ...userModel,
+    },
+  })
 
   return { allUsers }
 }

@@ -16,7 +16,7 @@ const getCategoryById = catchAsync(async (req, res) => {
 
   const category = await categoryService.getCategoryById(prisma, id)
 
-  responseHandler.ok(res, { category })
+  responseHandler.ok(res, category)
 }, prisma)
 
 // [GET] '/categories/:id/products'

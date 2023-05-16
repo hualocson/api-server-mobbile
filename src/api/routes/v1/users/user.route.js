@@ -10,7 +10,7 @@ router.get('/profile', middlewares.isAuth, userController.getUserProfile)
 
 // get all users
 // [GET] /api/v1/users
-router.get('/', middlewares.isAuth, userController.getAllUser)
+router.get('/', middlewares.isAdmin, userController.getAllUser)
 
 // signup
 // [POST] /api/v1/users/signup
