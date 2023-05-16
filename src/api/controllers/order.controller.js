@@ -22,7 +22,7 @@ const createOrder = catchAsync(async (req, res) => {
 const getOrderById = catchAsync(async (req, res) => {
   const { id } = req.params
   const user = req.payload.sub
-  const order = await orderService.getOrderById(prisma, user.id, id)
+  const order = await orderService.getOrderById(prisma, user.id, id, user.role)
   responseHandler.ok(res, order)
 }, prisma)
 
