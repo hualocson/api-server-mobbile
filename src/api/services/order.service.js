@@ -135,37 +135,71 @@ const createOrder = async (prisma, userId, data) => {
 }
 
 // [GET] /orders/:id => Get Order by Id
-const getOrderById = async (prisma, userId, id) => {
-  const order = await prisma.order.findFirst({
-    where: { id: osHelpers.toNumber(id), userId: osHelpers.toNumber(userId) },
-    select: {
-      id: true,
-      orderTotal: true,
-      shippingMethodId: true,
-      shippingAddressId: true,
-      orderStatus: true,
-      orderLines: {
-        select: {
-          id: true,
-          qty: true,
-          productItemId: true,
-          orderId: true,
-          price: true,
-          productItem: {
-            select: {
-              productImage: true,
-              product: {
-                select: {
-                  id: true,
-                  name: true,
+const getOrderById = async (prisma, userId, id, role) => {
+  let order
+  if (role === 'ADMIN') {
+    order = await prisma.order.findFirst({
+      where: { id: osHelpers.toNumber(id) },
+      select: {
+        id: true,
+        orderTotal: true,
+        shippingMethodId: true,
+        shippingAddressId: true,
+        orderStatus: true,
+        orderLines: {
+          select: {
+            id: true,
+            qty: true,
+            productItemId: true,
+            orderId: true,
+            price: true,
+            productItem: {
+              select: {
+                productImage: true,
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
                 },
               },
             },
           },
         },
       },
-    },
-  })
+    })
+  } else {
+    order = await prisma.order.findFirst({
+      where: { id: osHelpers.toNumber(id), userId: osHelpers.toNumber(userId) },
+      select: {
+        id: true,
+        orderTotal: true,
+        shippingMethodId: true,
+        shippingAddressId: true,
+        orderStatus: true,
+        orderLines: {
+          select: {
+            id: true,
+            qty: true,
+            productItemId: true,
+            orderId: true,
+            price: true,
+            productItem: {
+              select: {
+                productImage: true,
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+  }
 
   if (!order) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Order not found')
