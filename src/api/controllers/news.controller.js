@@ -20,8 +20,16 @@ const updateNews = catchAsync(async (req, res) => {
   responseHandler.ok(res, news)
 }, prisma)
 
+// [DELETE] /api/news/:id
+const deleteNews = catchAsync(async (req, res) => {
+  const { id } = req.params
+  const news = await newsService.deleteNews(prisma, id)
+  responseHandler.ok(res, news)
+}, prisma)
+
 export default {
   createNews,
   getNews,
   updateNews,
+  deleteNews,
 }

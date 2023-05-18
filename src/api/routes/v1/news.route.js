@@ -11,4 +11,7 @@ router.post('/', middlewares.isAdmin, newsController.createNews)
 // [PATCH] /api/news/:id
 router.patch('/:id', middlewares.isAdmin, newsController.updateNews)
 
+// [DELETE] /api/news/:id
+router.delete('/:id', middlewares.isAdmin, newsController.deleteNews)
+
 export default router
