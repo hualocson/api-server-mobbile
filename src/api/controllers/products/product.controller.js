@@ -27,8 +27,8 @@ const getProductVariationsByProductId = catchAsync(async (req, res) => {
 
 // [POST] '/categories/products'
 const createProduct = catchAsync(async (req, res) => {
-  const product = await productService.createProduct(prisma, req.body)
-  responseHandler.created(res, { product })
+  const message = await productService.createProduct(prisma, req.body)
+  responseHandler.created(res, message)
 }, prisma)
 
 // [PATCH] '/categories/products/:productId/image'
@@ -43,10 +43,22 @@ const updateProductImage = catchAsync(async (req, res) => {
   responseHandler.ok(res, { product })
 }, prisma)
 
+// [PATCH] '/categories/products/:productId'
+const updateProduct = catchAsync(async (req, res) => {
+  const { productId } = req.params
+  const { message } = await productService.updateProduct(
+    prisma,
+    productId,
+    req.body,
+  )
+  responseHandler.ok(res, message)
+}, prisma)
+
 export default {
   createProduct,
   getProducts,
   getProductsById,
+  updateProduct,
   updateProductImage,
   getProductVariationsByProductId,
 }

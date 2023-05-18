@@ -8,9 +8,13 @@ const productConfigurationsSelectOptions = {
             name: true,
           },
         },
+        id: true,
         value: true,
       },
     },
+  },
+  orderBy: {
+    variationOptionId: 'asc',
   },
 }
 

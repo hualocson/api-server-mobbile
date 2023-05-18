@@ -29,7 +29,32 @@ const getNews = async (prisma) => {
   return news
 }
 
+// [PATCH] /api/news/:id
+const updateNews = async (prisma, id, data) => {
+  const { title, content, author, imageUrl } = data
+  if (!title || !content || !author || !imageUrl) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Missing required fields')
+  }
+
+  const news = await prisma.news.update({
+    where: {
+      id,
+    },
+    data: {
+      title,
+      content,
+      author,
+      imageUrl,
+    },
+  })
+
+  if (!news)
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Cannot update news')
+  return news
+}
+
 export default {
   createNews,
   getNews,
+  updateNews,
 }

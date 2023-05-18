@@ -10,7 +10,7 @@ const getProductItemById = catchAsync(async (req, res) => {
     prisma,
     productItemId,
   )
-  responseHandler.ok(res, { productItem })
+  responseHandler.ok(res, productItem)
 }, prisma)
 
 // [POST] '/products/:productId/items'

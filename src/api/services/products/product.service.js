@@ -121,6 +121,38 @@ const updateProductImage = async (prisma, productId, imageUrl) => {
   return updatedProduct
 }
 
+// [PATCH] '/categories/products/:productId'
+const updateProduct = async (prisma, productId, body) => {
+  const id = osHelpers.toNumber(productId)
+  const { name, description, imageUrl } = body
+  if (!name || !description)
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Name and description are required',
+    )
+  const product = await prisma.product.update({
+    where: { id },
+    data: {
+      name,
+      description,
+    },
+  })
+
+  if (!product)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Update product failed')
+
+  if (imageUrl && imageUrl !== product.productImage) {
+    const updatedProduct = await updateProductImage(
+      prisma,
+      product.id,
+      imageUrl,
+    )
+    if (!updatedProduct)
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Update product image failed')
+  }
+  return { message: 'Update Success' }
+}
+
 // [POST] '/categories/products'
 const createProduct = async (prisma, body) => {
   const { categoryId, name, description, imageUrl } = body
@@ -140,8 +172,16 @@ const createProduct = async (prisma, body) => {
 
   if (!product)
     throw new ApiError(httpStatus.BAD_REQUEST, 'Create product failed')
-  const updatedProduct = await updateProductImage(prisma, product.id, imageUrl)
-  return updatedProduct
+  if (imageUrl) {
+    const updatedProduct = await updateProductImage(
+      prisma,
+      product.id,
+      imageUrl,
+    )
+    if (!updatedProduct)
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Update product image failed')
+  }
+  return { message: 'Created Success' }
 }
 
 export default {
@@ -151,4 +191,5 @@ export default {
   getProductsByCategoryId,
   updateProductImage,
   getProductVariationsByProductId,
+  updateProduct,
 }
