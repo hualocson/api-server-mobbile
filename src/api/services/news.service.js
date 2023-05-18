@@ -53,8 +53,22 @@ const updateNews = async (prisma, id, data) => {
   return news
 }
 
+// [DELETE] /api/news/:id
+const deleteNews = async (prisma, id) => {
+  const news = await prisma.news.delete({
+    where: {
+      id,
+    },
+  })
+
+  if (!news)
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Cannot delete news')
+  return news
+}
+
 export default {
   createNews,
   getNews,
   updateNews,
+  deleteNews,
 }
