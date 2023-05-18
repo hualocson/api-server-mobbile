@@ -1,5 +1,6 @@
 import httpStatus from 'http-status'
 import ApiError from '~utils/api-error'
+import { osHelpers } from '~helpers'
 
 // [POST] /api/news
 const createNews = async (prisma, data) => {
@@ -38,7 +39,7 @@ const updateNews = async (prisma, id, data) => {
 
   const news = await prisma.news.update({
     where: {
-      id,
+      id: osHelpers.toNumber(id),
     },
     data: {
       title,
@@ -57,7 +58,7 @@ const updateNews = async (prisma, id, data) => {
 const deleteNews = async (prisma, id) => {
   const news = await prisma.news.delete({
     where: {
-      id,
+      id: osHelpers.toNumber(id),
     },
   })
 
