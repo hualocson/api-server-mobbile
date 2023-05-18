@@ -13,7 +13,15 @@ const getNews = catchAsync(async (req, res) => {
   responseHandler.ok(res, news)
 }, prisma)
 
+// [PATCH] /api/news/:id
+const updateNews = catchAsync(async (req, res) => {
+  const { id } = req.params
+  const news = await newsService.updateNews(prisma, id, req.body)
+  responseHandler.ok(res, news)
+}, prisma)
+
 export default {
   createNews,
   getNews,
+  updateNews,
 }

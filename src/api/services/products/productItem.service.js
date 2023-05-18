@@ -57,9 +57,9 @@ const createProductItem = async (prisma, productId, body) => {
     return {
       variationOption: {
         connectOrCreate: {
-          where: { id: item.variationOptionId },
+          where: { id: item.id },
           create: {
-            id: item.variationOptionId,
+            id: item.id,
             variationId: item.variationId,
             value: item.value,
           },
