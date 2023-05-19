@@ -87,6 +87,56 @@ const getAllOrders = async (prisma, userId, role, sort) => {
   return result
 }
 
+// [GET] /orders/:id => Get Order by Id
+const getOrderByUserId = async (prisma, userId, sort) => {
+  let defSort = 'desc'
+  if (sort === 'asc') defSort = sort
+  const orders = await prisma.order.findMany({
+    where: { userId: osHelpers.toNumber(userId) },
+    select: {
+      id: true,
+      orderTotal: true,
+      shippingMethodId: true,
+      shippingAddressId: true,
+      orderStatus: true,
+      orderLines: {
+        select: {
+          id: true,
+          qty: true,
+          productItemId: true,
+          orderId: true,
+          price: true,
+          productItem: {
+            select: {
+              productImage: true,
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    orderBy: { createdAt: defSort },
+  })
+  const result = orders.map((order) => ({
+    ...order,
+    orderLines: order.orderLines.map((orderLine) => ({
+      id: orderLine.id,
+      qty: orderLine.qty,
+      productItemId: orderLine.productItemId,
+      orderId: orderLine.orderId,
+      price: orderLine.price,
+      name: orderLine.productItem.product.name,
+      img: orderLine.productItem.productImage,
+    })),
+  }))
+  return result
+}
+
 // [POST] /orders => Create new Order
 const createOrder = async (prisma, userId, data) => {
   const { orderTotal, shippingMethodId, shippingAddressId, orderLines } = data
@@ -240,4 +290,5 @@ export default {
   getAllOrders,
   getOrderById,
   updateOrderStatusById,
+  getOrderByUserId,
 }

@@ -69,54 +69,27 @@ const getCategoryById = async (prisma, id) => {
 }
 
 // [POST] '/categories'
-const createCategory = async (prisma, categoryName, icUrl) => {
+const createCategory = async (prisma, categoryName, icUrl, variations) => {
   let category
+  const variData = variations.map((item) => {
+    return { name: item }
+  })
   if (icUrl) {
     category = await prisma.productCategory.create({
       data: {
         categoryName,
         icUrl,
-      },
-    })
-  } else {
-    category = await prisma.productCategory.create({
-      data: { categoryName },
-    })
-  }
-
-  if (!category) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Create new category failed')
-  }
-
-  return category
-}
-
-// [POST] '/categories'
-const createCategoryWithVariations = async (
-  prisma,
-  name,
-  icUrl,
-  variations, // array variation
-) => {
-  let category
-  if (!variations || variations.length === 0) {
-    category = await createCategory(prisma, name)
-  } else if (icUrl) {
-    category = await prisma.productCategory.create({
-      data: {
-        categoryName: name,
-        icUrl,
         variations: {
-          create: variations,
+          create: variData,
         },
       },
     })
   } else {
     category = await prisma.productCategory.create({
       data: {
-        categoryName: name,
+        categoryName,
         variations: {
-          create: variations,
+          create: variData,
         },
       },
     })
@@ -202,7 +175,6 @@ const deleteCategory = async (prisma, id) => {
 
 export default {
   createCategory,
-  createCategoryWithVariations,
   createVariationByCategoryId,
   deleteCategory,
   getListCategory,
