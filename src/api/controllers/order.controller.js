@@ -26,6 +26,14 @@ const getOrderById = catchAsync(async (req, res) => {
   responseHandler.ok(res, order)
 }, prisma)
 
+// [GET] '/orders/:userId' => Get order by id
+const getOrderByUserId = catchAsync(async (req, res) => {
+  const { userId } = req.params
+  const { sort } = req.query
+  const order = await orderService.getOrderByUserId(prisma, userId, sort)
+  responseHandler.ok(res, order)
+}, prisma)
+
 // [PATCH] '/orders/:id/status' => Update order by id
 const updateOrderById = catchAsync(async (req, res) => {
   const { id } = req.params
@@ -39,4 +47,5 @@ export default {
   getOrderById,
   createOrder,
   updateOrderById,
+  getOrderByUserId,
 }

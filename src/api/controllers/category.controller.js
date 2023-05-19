@@ -39,7 +39,7 @@ const createVariationByCategoryId = catchAsync(async (req, res) => {
     req.body,
   )
 
-  responseHandler.created(res, { variation })
+  responseHandler.created(res, variation)
 }, prisma)
 
 // [GET] '/categories/:id/variations'
@@ -59,18 +59,13 @@ const getListVariationByCategoryId = catchAsync(async (req, res) => {
 // [POST] '/categories/'
 const createCategory = catchAsync(async (req, res) => {
   const { categoryName, icUrl, variations } = req.body
-  let category
-  if (!variations) {
-    category = await categoryService.createCategory(prisma, categoryName, icUrl)
-  } else {
-    category = await categoryService.createCategoryWithVariations(
-      prisma,
-      categoryName,
-      icUrl,
-      variations,
-    )
-  }
-  responseHandler.created(res, { category })
+  const category = await categoryService.createCategory(
+    prisma,
+    categoryName,
+    icUrl,
+    variations,
+  )
+  responseHandler.created(res, category)
 }, prisma)
 
 // [PATCH] '/categories/:id'

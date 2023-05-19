@@ -94,8 +94,92 @@ const createProductItem = async (prisma, productId, body) => {
   return updatedProductItem
 }
 
+// [PATCH] '/categories/products/items/:productItemId'
+const updateProductItem = async (prisma, productItemId, body) => {
+  const id = osHelpers.toNumber(productItemId)
+  const { qtyInStock, price, imageUrl, productConfigurations } = body
+
+  if (qtyInStock < 0 || price < 0 || !productConfigurations)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid data')
+
+  const productItem = await prisma.productItem.findUnique({
+    where: { id },
+    include: {
+      productConfigurations: true,
+    },
+  })
+
+  if (!productItem)
+    throw new ApiError(httpStatus.NOT_FOUND, 'Product item not found')
+  let productItemUpdated
+  if (productConfigurations.length > 0) {
+    await prisma.productItem.update({
+      where: { id },
+      data: {
+        qtyInStock: osHelpers.toNumber(qtyInStock),
+        price: osHelpers.toNumber(price),
+        productConfigurations: {
+          deleteMany: {},
+        },
+      },
+    })
+
+    const variationOptions = productConfigurations.map((item) => {
+      return {
+        variationOption: {
+          connectOrCreate: {
+            where: { id: item.id },
+            create: {
+              id: item.id,
+              variationId: item.variationId,
+              value: item.value,
+            },
+          },
+        },
+      }
+    })
+    productItemUpdated = await prisma.productItem.update({
+      where: { id },
+      data: {
+        productConfigurations: {
+          create: variationOptions,
+        },
+      },
+    })
+  } else {
+    productItemUpdated = await prisma.productItem.update({
+      where: { id },
+      data: {
+        qtyInStock: osHelpers.toNumber(qtyInStock),
+        price: osHelpers.toNumber(price),
+      },
+    })
+  }
+
+  if (!productItemUpdated)
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Update product item failed')
+
+  if (
+    imageUrl !== null &&
+    imageUrl !== '' &&
+    imageUrl !== undefined &&
+    imageUrl !== productItem.productImage
+  ) {
+    const updateImage = await updateProductItemImage(
+      prisma,
+      productItem.id,
+      imageUrl,
+    )
+    if (!updateImage)
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Update product item failed')
+    return updateImage
+  }
+  return productItem
+}
+
 export default {
   getProductItemById,
   createProductItem,
+  updateProductItem,
   updateProductItemImage,
 }

@@ -7,6 +7,13 @@ const router = express.Router()
 // [GET] '/orders/:id' => Get order by id
 router.get('/:id', middlewares.isAuth, orderController.getOrderById)
 
+// [GET] /orders/user/:userId => Get Order by User Id
+router.get(
+  '/user/:userId',
+  middlewares.isAdmin,
+  orderController.getOrderByUserId,
+)
+
 router.get('/', middlewares.isAuth, orderController.getAllOrders)
 
 router.post('/', middlewares.isAuth, orderController.createOrder)

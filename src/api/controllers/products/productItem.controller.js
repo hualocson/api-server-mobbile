@@ -21,7 +21,7 @@ const createProductItem = catchAsync(async (req, res) => {
     productId,
     req.body,
   )
-  responseHandler.created(res, { productItem })
+  responseHandler.created(res, productItem)
 }, prisma)
 
 // in product route
@@ -34,11 +34,23 @@ const updateProductItemImage = catchAsync(async (req, res) => {
     productItemId,
     imageUrl,
   )
-  responseHandler.ok(res, { productItem })
+  responseHandler.ok(res, productItem)
+}, prisma)
+
+// [PATCH] '/products/items/:productItemId'
+const updateProductItem = catchAsync(async (req, res) => {
+  const { productItemId } = req.params
+  const productItem = await productService.updateProductItem(
+    prisma,
+    productItemId,
+    req.body,
+  )
+  responseHandler.ok(res, productItem)
 }, prisma)
 
 export default {
   getProductItemById,
   createProductItem,
+  updateProductItem,
   updateProductItemImage,
 }
